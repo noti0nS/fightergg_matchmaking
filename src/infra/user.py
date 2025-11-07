@@ -1,7 +1,7 @@
 import db
 
 
-def get_user_pass(email: str) -> str | None:
+def fetch_user_password(email: str) -> str | None:
     try:
         conn = db.create_connection()
         if conn is None:

@@ -13,8 +13,13 @@ def login(email: str, password: str) -> bool:
             print(f"A senha fornecida é inválida: {password_status}")
             return False
 
-        user_password = user.get_user_pass(email)
+        user_password = user.fetch_user_password(email)
         return password_utils.verify_password(password, user_password)
     except Exception as e:
         print(e)
         return False
+    
+
+def register() -> bool:
+    # TODO Gabriel: Implementar função.
+    pass
