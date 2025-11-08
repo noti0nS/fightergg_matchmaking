@@ -1,4 +1,4 @@
-import db
+from . import db
 
 
 def fetch_user_password(email: str) -> str | None:

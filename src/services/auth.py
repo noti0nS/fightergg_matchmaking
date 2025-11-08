@@ -1,5 +1,5 @@
 from utils import validators_utils, password_utils
-from infra import user
+from data import user
 
 
 def login(email: str, password: str) -> bool:
