@@ -14,21 +14,26 @@ def main():
         option = menu.get_menu_option("> ", 1, 2)
         if option == -1:
             continue
-        
+
         menu.clear_console()
 
-        authenticated = False
+        user: tuple = None
         match option:
             case 1:
                 email = input("Digite o seu e-mail: ")
                 password = input("Digite a sua senha: ")
-                authenticated = auth.login(email, password)
+                user = auth.login(email, password)
             case 2:
                 # TODO Gabriel: Implementar register
                 pass
-        
-        while authenticated:
-            pass
+
+        while user:
+            menu.clear_console()
+            menu.show_banner()
+
+            print(f"Seja bem vindo, {user[1]}!")
+
+            input()
 
 
 if __name__ == "__main__":

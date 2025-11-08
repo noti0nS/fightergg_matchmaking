@@ -6,7 +6,7 @@ def is_email_valid(email: str) -> bool:
     return rgx.match(email) is not None
 
 
-def get_password_status(password: str) -> str | None:
+def validate_password_strength(password: str) -> str | None:
     if len(password) < 6:
         return "Senha muito curta. Deve ter pelo menos 6 caracteres."
     if not re.search(r"[A-Z]", password):
