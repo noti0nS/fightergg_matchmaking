@@ -1,7 +1,7 @@
 import os, psycopg2
 
 
-def create_connection() -> psycopg2.extensions.connection:
+def create_connection() -> psycopg2.extensions.connection | None:
     try:
         return psycopg2.connect(
             dbname=os.getenv("DB_NAME"),
@@ -15,7 +15,9 @@ def create_connection() -> psycopg2.extensions.connection:
         return None
 
 
-def close_connection(conn, cursor):
+def close_connection(
+    conn: psycopg2.extensions.connection, cursor: psycopg2.extensions.cursor
+):
     if cursor:
         cursor.close()
     if conn:
