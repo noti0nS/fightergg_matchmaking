@@ -1,23 +1,35 @@
 from utils import validators_utils, password_utils
 from data import user
 
-def login(email: str, password: str) -> bool:
+import getpass
+
+def login() -> tuple | None:
     try:
+        email = input("Digite o seu e-mail: ")
+        password = getpass.getpass("Digite a sua senha: ")
+
         if not validators_utils.is_email_valid(email):
-            print("O E-mail fornecido é inválido.")
-            return False
+            print(
+                "As credencias estão inválidas! Verifique se o e-mail e a senha foram digitados corretamente."
+            )
+            return None
 
-        password_status = validators_utils.get_password_status(password)
-        if password_status:
-            print(f"A senha fornecida é inválida: {password_status}")
-            return False
+        password_strength_result = validators_utils.validate_password_strength(password)
+        if password_strength_result:
+            print(password_strength_result)
+            return None
 
-        user_password = user.fetch_user_password(email)
-        return password_utils.verify_password(password, user_password)
+        user_data = user.get_user_by_email(email)
+        if not password_utils.verify_password(password, user_data[2]):
+            print(
+                "As credencias estão inválidas! Verifique se o e-mail e a senha foram digitados corretamente."
+            )
+            return None
+
+        return (user_data[0], user_data[1]) # Retorna apenas o id e nickname.
     except Exception as e:
         print(e)
-        return False
-    
+
 
 def register(nome_completo: str, nickname: str, email: str, password: str) -> bool:
     #Registra um novo usuario no sistema

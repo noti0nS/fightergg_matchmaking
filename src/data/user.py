@@ -1,16 +1,15 @@
 from . import db
 
 
-def fetch_user_password(email: str) -> str | None:
+def get_user_by_email(email: str) -> tuple | None:
     try:
         conn = db.create_connection()
-        if conn is None:
+        if not conn: 
             return None
         cursor = conn.cursor()
-        cursor.execute("SELECT password FROM users WHERE email=%s")
-        password = cursor.fetchone((email,))
-        if password:
-            return password(0)
+        cursor.execute(
+            "SELECT id, nickname, senha FROM Usuarios WHERE email=%s", (email,)
+        )
+        return cursor.fetchone()
     finally:
         db.close_connection(conn, cursor)
-    return None
