@@ -1,28 +1,29 @@
 from dotenv import load_dotenv
-from ui import menu
+from utils import ui_utils
 from services import auth
 
 
 def main():
     load_dotenv()  # Carrega variáveis de ambiente do arquivo .env
 
-    menu.show_banner()
+    ui_utils.show_banner()
 
     while True:
         print("[1] - Realize o Login")
         print("[2] - Cadastre-se")
         print("[3] - Sair")
-        option = menu.get_menu_option("> ", 1, 3)
+
+        option = ui_utils.get_menu_option("> ", 1, 3)
         if option == -1:
             continue
 
         user: tuple = None
         match option:
             case 1:
-                menu.clear_console()
+                ui_utils.clear_console()
                 user = auth.login()
             case 2:
-                menu.clear_console()
+                ui_utils.clear_console()
                 # TODO Gabriel: Implementar register
             case 3:
                 break
@@ -30,7 +31,7 @@ def main():
         if not user:
             continue
 
-        menu.show_banner()
+        ui_utils.show_banner()
 
         print(f"Seja bem vindo, {user[1]}!\n")
 
@@ -42,15 +43,18 @@ def main():
             print("[5] - Excluir Evento")
             print("[6] - Logout")
 
-            option = menu.get_menu_option("> ", 1, 6)
+            option = ui_utils.get_menu_option("> ", 1, 6)
             if option == -1:
                 continue
+
+            ui_utils.clear_console()
 
             match option:
                 case 1:
                     # TODO Gabriel: Implementar Listagem de Eventos
                     pass
                 case 2:
+                    # TODO Gabriel: Implementar Participar de Eventos
                     pass
                 case 3:
                     pass
@@ -64,7 +68,7 @@ def main():
                 case 6:
                     user = None
 
-        menu.show_banner()
+        ui_utils.show_banner()
 
     print("Até breve! :-)")
 
