@@ -41,9 +41,10 @@ def main():
             print("[2] - Participar de Eventos")
             print("[3] - Gerenciar Eventos")
             print("[4] - Criar Evento")
-            print("[5] - Logout")
+            print("[5] - Excluir Evento")
+            print("[6] - Logout")
 
-            option = menu.get_menu_option("> ", 1, 5)
+            option = menu.get_menu_option("> ", 1, 6)
             if option == -1:
                 continue
 
@@ -57,6 +58,8 @@ def main():
                 case 4:
                     pass
                 case 5:
+                    pass
+                case 6:
                     user = None
 
         menu.show_banner()
