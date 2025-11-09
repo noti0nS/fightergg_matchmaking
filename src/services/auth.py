@@ -1,11 +1,13 @@
 from utils import validators_utils, password_utils
 from data import user
 
+import getpass
+
 
 def login() -> tuple | None:
     try:
         email = input("Digite o seu e-mail: ")
-        password = input("Digite a sua senha: ")
+        password = getpass.getpass("Digite a sua senha: ")
 
         if not validators_utils.is_email_valid(email):
             print(

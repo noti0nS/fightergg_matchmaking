@@ -51,26 +51,45 @@ def main():
 
             match option:
                 case 1:
-                    # TODO Gabriel: Implementar Listagem de Eventos
-                    pass
+                    _list_events_submenu()
                 case 2:
-                    # TODO Gabriel: Implementar Participar de Eventos
-                    pass
+                    _join_event_submenu()
                 case 3:
-                    pass
+                    _manage_events_submenu()
                 case 4:
                     # TODO Gabriel: Implementar criação de evento
                     pass
                 case 5:
-                    # TODO Gabriel: Implementar remoção de evento
-                    # P.S: Só é possível remover eventos que ainda não foram iniciados
-                    pass
+                    _remove_event_submenu()
                 case 6:
                     user = None
 
         ui_utils.show_banner()
 
     print("Até breve! :-)")
+
+
+def _list_events_submenu():
+    """
+    TODO Gabriel: Implementar Listagem de Eventos
+    """
+
+
+def _join_event_submenu():
+    """
+    TODO Gabriel: Implementar Participar de Eventos
+    """
+
+
+def _manage_events_submenu():
+    pass
+
+
+def _remove_event_submenu():
+    """
+    TODO Gabriel: Implementar remoção de evento
+    P.S: Só é possível remover eventos que ainda não foram iniciados
+    """
 
 
 if __name__ == "__main__":
