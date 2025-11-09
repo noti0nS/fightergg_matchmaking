@@ -57,8 +57,7 @@ def main():
                 case 3:
                     _manage_events_submenu()
                 case 4:
-                    # TODO Gabriel: Implementar criação de evento
-                    pass
+                    _create_event_submenu()
                 case 5:
                     _remove_event_submenu()
                 case 6:
@@ -83,6 +82,12 @@ def _join_event_submenu():
 
 def _manage_events_submenu():
     pass
+
+
+def _create_event_submenu():
+    """
+    TODO Gabriel: Implementar Criação de Evento
+    """
 
 
 def _remove_event_submenu():
