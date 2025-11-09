@@ -2,8 +2,11 @@ from utils import validators_utils, password_utils
 from data import user
 
 
-def login(email: str, password: str) -> tuple | None:
+def login() -> tuple | None:
     try:
+        email = input("Digite o seu e-mail: ")
+        password = input("Digite a sua senha: ")
+
         if not validators_utils.is_email_valid(email):
             print(
                 "As credencias estão inválidas! Verifique se o e-mail e a senha foram digitados corretamente."

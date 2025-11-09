@@ -20,9 +20,7 @@ def main():
         match option:
             case 1:
                 menu.clear_console()
-                email = input("Digite o seu e-mail: ")
-                password = input("Digite a sua senha: ")
-                user = auth.login(email, password)
+                user = auth.login()
             case 2:
                 menu.clear_console()
                 # TODO Gabriel: Implementar register
@@ -50,14 +48,18 @@ def main():
 
             match option:
                 case 1:
+                    # TODO Gabriel: Implementar Listagem de Eventos
                     pass
                 case 2:
                     pass
                 case 3:
                     pass
                 case 4:
+                    # TODO Gabriel: Implementar criação de evento
                     pass
                 case 5:
+                    # TODO Gabriel: Implementar remoção de evento
+                    # P.S: Só é possível remover eventos que ainda não foram iniciados
                     pass
                 case 6:
                     user = None
