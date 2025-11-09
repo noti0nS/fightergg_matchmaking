@@ -24,7 +24,7 @@ def main():
                 user = auth.login()
             case 2:
                 ui_utils.clear_console()
-                # TODO Gabriel: Implementar register
+                auth.register()    
             case 3:
                 break
 

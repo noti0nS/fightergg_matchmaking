@@ -31,16 +31,22 @@ def login() -> tuple | None:
         print(e)
 
 
-def register(nome_completo: str, nickname: str, email: str, password: str) -> bool:
+def register() -> bool:
     #Registra um novo usuario no sistema
     try: 
+
+        nome_completo = input("Digite seu nome completo: ")
+        nickname = input("Escolha um nickname: ")
+        email = input("Digite seu e-mail: ")
+        password = getpass.getpass("Escolha uma senha: ")
+        
         #Validar E-mail
         if not validators_utils.is_email_valid(email):
             print(f"O e-mail fornecido é inválido: {email}")
             return False
         
         #Validar Formato da Senha
-        password_status = validators_utils.get_password_status(password)
+        password_status = validators_utils.validate_password_strength(password)
         if password_status:
             print(f"A senha fornecida é invalida: {password_status}")
             return False
@@ -51,7 +57,7 @@ def register(nome_completo: str, nickname: str, email: str, password: str) -> bo
             return False
 
         if user.check_nickname_exists(nickname):
-            print("Erro: Este e-mail já está cadastrado")
+            print("Erro: Nickname já está em uso")
             return False
         
         #Criptografia de senha
