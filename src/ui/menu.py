@@ -1,7 +1,12 @@
 import os
 
 
+def clear_console():
+    os.system("cls" if os.name == "nt" else "clear")
+
+
 def show_banner():
+    clear_console()
     print(
         r"""
 
@@ -15,9 +20,6 @@ def show_banner():
 """
     )
 
-
-def clear_console():
-    os.system("cls" if os.name == "nt" else "clear")
 
 def get_menu_option(prompt: str, min_option: int, max_option: int) -> int:
     try:

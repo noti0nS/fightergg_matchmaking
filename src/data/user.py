@@ -4,7 +4,7 @@ from . import db
 def get_user_by_email(email: str) -> tuple | None:
     try:
         conn = db.create_connection()
-        if conn is None:
+        if not conn: 
             return None
         cursor = conn.cursor()
         cursor.execute(
