@@ -4,7 +4,7 @@ from . import db
 def get_user_by_email(email: str) -> tuple | None:
     try:
         conn = db.create_connection()
-        if not conn: 
+        if not conn:
             return None
         cursor = conn.cursor()
         cursor.execute(
@@ -14,27 +14,28 @@ def get_user_by_email(email: str) -> tuple | None:
     finally:
         db.close_connection(conn, cursor)
 
+
 def check_email_exists(email: str) -> bool:
     try:
         conn = db.create_connection()
-        if not conn: 
+        if not conn:
             return False
         cursor = conn.cursor()
-        cursor.execute(
-            "SELECT COUNT(*) FROM Usuarios WHERE email=%s", (email,)
-        )
+        cursor.execute("SELECT COUNT(*) FROM Usuarios WHERE email=%s", (email,))
         result = cursor.fetchone()
         return result[0] > 0
     finally:
         db.close_connection(conn, cursor)
 
+
 def check_nickname_exists(nickname: str) -> bool:
-         try:
-            conn = db.create_connection()
-            if not conn: 
-                return False
-            cursor = conn.cursor()
-            cursor.execute(
-                
-        
-        )
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return False
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM Usuarios WHERE nickname=%s", (nickname,))
+        result = cursor.fetchone()
+        return result[0] > 0
+    finally:
+        db.close_connection(conn, cursor)
