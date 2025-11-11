@@ -61,7 +61,7 @@ def register() -> bool:
             return False
         
         #Criptografia de senha
-        hashed_password = password_utils.hash_password(password)
+        hashed_password = password_utils.generate_hashed_password(password)
         success = user.create_user(
             nome_completo=nome_completo,
             nickname=nickname,
