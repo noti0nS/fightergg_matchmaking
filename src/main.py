@@ -89,8 +89,8 @@ def _manage_events_submenu(user):
 
     ui_utils.clear_console()
     print(f"O que deseja fazer com o evento '{selected_event[1]}'?")
+
     em_andamento: bool = selected_event[5]
-    
     while True:
         if em_andamento:
             print("[1] - Gerenciar Partidas")

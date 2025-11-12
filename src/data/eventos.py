@@ -35,14 +35,14 @@ SELECT
 		FROM
 			EVENTOS_TICKETS ET
 		WHERE
-			ET.ID = E.ID
+			ET.EVENTO_ID = E.ID
 	) AS QTD_SUBSCRIBED_PLAYERS
 FROM
 	EVENTOS E
 WHERE
 	OWNER_ID = %s
 	AND WINNER_ID IS NULL
-ORDER BY Id
+ORDER BY ID
 """
         cursor.execute(sql, (usuario_id,))
         return cursor.fetchall()
