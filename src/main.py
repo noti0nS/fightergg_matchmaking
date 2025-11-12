@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from utils import ui_utils
-from services import auth
+from services import auth, events
 
 
 def main():
@@ -24,7 +24,7 @@ def main():
                 user = auth.login()
             case 2:
                 ui_utils.clear_console()
-                auth.register()    
+                auth.register()
             case 3:
                 break
 
@@ -51,15 +51,15 @@ def main():
 
             match option:
                 case 1:
-                    _list_events_submenu()
+                    _list_events_submenu(user)
                 case 2:
-                    _join_event_submenu()
+                    _join_event_submenu(user)
                 case 3:
-                    _manage_events_submenu()
+                    _manage_events_submenu(user)
                 case 4:
-                    _create_event_submenu()
+                    _create_event_submenu(user)
                 case 5:
-                    _remove_event_submenu()
+                    _remove_event_submenu(user)
                 case 6:
                     user = None
 
@@ -68,29 +68,70 @@ def main():
     print("Até breve! :-)")
 
 
-def _list_events_submenu():
+def _list_events_submenu(user):
     """
     TODO Gabriel: Implementar Listagem de Eventos
     """
 
 
-def _join_event_submenu():
+def _join_event_submenu(user):
     """
     TODO Gabriel: Implementar Participar de Eventos
     """
 
 
-def _manage_events_submenu():
-    pass
+def _manage_events_submenu(user):
+    print("GERENCIAMENTO DE EVENTOS")
+
+    selected_event = events.select_event_from_user(user[0])
+    if not selected_event:
+        return
+
+    ui_utils.clear_console()
+    print(f"O que deseja fazer com o evento '{selected_event[1]}'?")
+    em_andamento: bool = selected_event[5]
+    
+    while True:
+        if em_andamento:
+            print("[1] - Gerenciar Partidas")
+            print("[2] - Voltar ao Menu")
+        else:
+            print("[1] - Iniciar evento")
+            print("[2] - Editar informações")
+            print("[3] - Voltar ao Menu")
+
+        option = ui_utils.get_menu_option("> ", 1, 2 if em_andamento else 3)
+        if option == -1:
+            continue
+
+        if em_andamento:
+            match option:
+                case 1:
+                    # TODO: _manage_matches()
+                    pass
+                case 2:
+                    ui_utils.show_banner()
+                    break
+        else:
+            match option:
+                case 1:
+                    # TODO _start_event()
+                    pass
+                case 2:
+                    # TODO GABRIEL: _edit_event_info()
+                    pass
+                case 3:
+                    ui_utils.show_banner()
+                    break
 
 
-def _create_event_submenu():
+def _create_event_submenu(user):
     """
     TODO Gabriel: Implementar Criação de Evento
     """
 
 
-def _remove_event_submenu():
+def _remove_event_submenu(user):
     """
     TODO Gabriel: Implementar remoção de evento
     P.S: Só é possível remover eventos que ainda não foram iniciados

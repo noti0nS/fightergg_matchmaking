@@ -1,5 +1,5 @@
 from utils import validators_utils, password_utils
-from data import user
+from data import usuarios
 
 import getpass
 
@@ -19,14 +19,14 @@ def login() -> tuple | None:
             print(password_strength_result)
             return None
 
-        user_data = user.get_user_by_email(email)
-        if not password_utils.verify_password(password, user_data[2]):
+        user = usuarios.get_user_by_email(email)
+        if not password_utils.verify_password(password, user[2]):
             print(
                 "As credencias estão inválidas! Verifique se o e-mail e a senha foram digitados corretamente."
             )
             return None
 
-        return (user_data[0], user_data[1]) # Retorna apenas o id e nickname.
+        return (user[0], user[1]) # Retorna apenas o id e nickname.
     except Exception as e:
         print(e)
 
@@ -52,17 +52,17 @@ def register() -> bool:
             return False
         
         #Validar erros
-        if user.check_email_exists(email):
+        if usuarios.check_email_exists(email):
             print("Erro: Este e-mail já está cadastrado")
             return False
 
-        if user.check_nickname_exists(nickname):
+        if usuarios.check_nickname_exists(nickname):
             print("Erro: Nickname já está em uso")
             return False
         
         #Criptografia de senha
         hashed_password = password_utils.generate_hashed_password(password)
-        success = user.create_user(
+        success = usuarios.create_user(
             nome_completo=nome_completo,
             nickname=nickname,
             email=email,
