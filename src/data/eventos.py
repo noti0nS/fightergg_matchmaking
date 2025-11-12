@@ -12,7 +12,8 @@ def fetch_active_events_by_user(usuario_id):
         em_andamento,
         valor_recompensa,
         qtd_players,
-        qtd_subscribed_players)
+        qtd_subscribed_players,
+        game_titulo)
     """
     try:
         conn = db.create_connection()
@@ -36,9 +37,11 @@ SELECT
 			EVENTOS_TICKETS ET
 		WHERE
 			ET.EVENTO_ID = E.ID
-	) AS QTD_SUBSCRIBED_PLAYERS
+	) AS QTD_SUBSCRIBED_PLAYERS,
+	G.TITULO
 FROM
 	EVENTOS E
+	INNER JOIN GAMES G ON E.GAME_ID = G.ID
 WHERE
 	OWNER_ID = %s
 	AND WINNER_ID IS NULL

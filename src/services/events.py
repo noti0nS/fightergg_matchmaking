@@ -1,7 +1,6 @@
 from data import eventos
 from utils import type_utils
 
-
 def select_event_from_user(usuario_id):
     try:
         usuario_eventos = eventos.fetch_active_events_by_user(usuario_id)
@@ -35,12 +34,15 @@ def select_event_from_user(usuario_id):
 
 
 def _display_event_card(usuario_evento):
+    qtd_participantes = usuario_evento[8]
+    qtd_players = usuario_evento[7]
     print(
         f"""[{usuario_evento[0]}] · {usuario_evento[1]}
 {usuario_evento[2]}
 
-Inscrições começam em {usuario_evento[3]} e vão até {usuario_evento[4]}
+Inscrições: {usuario_evento[3]} até {usuario_evento[4]}
+Recompensa: {usuario_evento[6]} \t\t\t Participantes: {qtd_participantes}/{qtd_players} {'(FULL)' if qtd_players == qtd_participantes else ''}
+Game: {usuario_evento[9]}
 Em andamento: {'SIM' if [usuario_evento[5]] else 'NÃO'}
-Recompensa: {usuario_evento[6]} \t\t\t Participantes: {usuario_evento[8]}/{usuario_evento[7]}
 --------------------------------------------------------------------------"""
     )
