@@ -80,7 +80,7 @@ def start_event(evento_id):
         _generate_brackets(evento_id, qtd_rounds, user_ticket_ids, cursor)
 
         sql = "UPDATE EVENTOS SET EM_ANDAMENTO = TRUE WHERE id = %s"
-        cursor.execute(sql, (evento_id))
+        cursor.execute(sql, (evento_id,))
 
         conn.commit()
         return True
@@ -100,50 +100,53 @@ def _generate_brackets(
 ):
     next_inserted_match_ids = []
     for i in range(1, qtd_rounds + 1):
-        is_first_match = i == qtd_rounds
-        is_last_match = i == 1
-
-        if is_last_match:
-            sql = f"INSERT INTO EVENTOS_PARTIDAS(EVENTO_ID) VALUES %s RETURNING ID;"
-            cursor.execute(sql, (evento_id))
+        current_round = qtd_rounds - (i - 1)
+        if i == 1:
+            sql = "INSERT INTO EVENTOS_PARTIDAS(EVENTO_ID, ROUND) VALUES (%s, %s) RETURNING ID;"
+            cursor.execute(sql, (evento_id, current_round))
             next_inserted_match_ids.append(cursor.fetchone()[0])
-        elif is_first_match:
+        elif i == qtd_rounds:
             data = []
             interval = 0
-            user_ticked_idx = 0
+            player_ticket_idx = 0
             next_match_id_idx = 0
-            matches_on_current_round = (2**i) / 2
-            for i in range(matches_on_current_round):
-                if interval > 0 and interval - 2 == 0:
+            total_matches_this_round = int((2**i) / 2)
+            for _ in range(total_matches_this_round):
+                if interval - 2 == 0:
                     interval = 0
                     next_match_id_idx += 1
                 interval += 1
                 data.append(
                     (
                         evento_id,
-                        user_ticket_ids[user_ticked_idx],
-                        user_ticket_ids[user_ticked_idx + 1],
+                        user_ticket_ids[player_ticket_idx],
+                        user_ticket_ids[player_ticket_idx + 1],
                         next_inserted_match_ids[next_match_id_idx],
+                        current_round,
                     )
                 )
-                user_ticked_idx += 2
+                player_ticket_idx += 2
 
-            sql = f"INSERT INTO EVENTOS_PARTIDAS(EVENTO_ID, PLAYER1_ID, PLAYER2_ID, NEXT_MATCH_ID) VALUES %s RETURNING ID;"
+            sql = "INSERT INTO EVENTOS_PARTIDAS(EVENTO_ID, PLAYER1_ID, PLAYER2_ID, NEXT_MATCH_ID, ROUND) VALUES %s;"
             execute_values(cursor, sql, data)
-
-            next_inserted_match_ids = [row[0] for row in cursor.fetchall()]
         else:
-            matches_on_current_round = (2**i) / 2
             data = []
             interval = 0
             next_match_id_idx = 0
-            for i in range(matches_on_current_round):
-                if interval > 0 and interval - 2 == 0:
+            total_matches_this_round = int((2**i) / 2)
+            for _ in range(total_matches_this_round):
+                if interval - 2 == 0:
                     interval = 0
                     next_match_id_idx += 1
                 interval += 1
-                data.append((evento_id, next_inserted_match_ids[next_match_id_idx]))
+                data.append(
+                    (
+                        evento_id,
+                        next_inserted_match_ids[next_match_id_idx],
+                        current_round,
+                    )
+                )
 
-            sql = f"INSERT INTO EVENTOS_PARTIDAS(EVENTO_ID, NEXT_MATCH_ID) VALUES %s RETURNING ID;"
+            sql = "INSERT INTO EVENTOS_PARTIDAS(EVENTO_ID, NEXT_MATCH_ID, ROUND) VALUES %s RETURNING ID;"
             execute_values(cursor, sql, data)
             next_inserted_match_ids = [row[0] for row in cursor.fetchall()]
