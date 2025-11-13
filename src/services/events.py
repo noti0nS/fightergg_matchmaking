@@ -1,5 +1,6 @@
 from data import eventos
-from utils import type_utils
+from utils import type_utils, ui_utils
+
 
 def select_event_from_user(usuario_id):
     try:
@@ -46,3 +47,30 @@ Game: {usuario_evento[9]}
 Em andamento: {'SIM' if [usuario_evento[5]] else 'NÃO'}
 --------------------------------------------------------------------------"""
     )
+
+
+def start_event(usuario_evento) -> bool:
+    qtd_players = usuario_evento[7]
+    qtd_participantes = usuario_evento[8]
+
+    if qtd_players > qtd_participantes:
+        if qtd_participantes % 2 == 0:
+            print(
+                f"O evento possui {qtd_participantes} jogadores inscritos de um limite de {qtd_players}. Deseja prosseguir mesmo assim?"
+            )
+            print("[1] - SIM")
+            print("[2] - NÃO")
+            while True:
+                option = ui_utils.get_menu_option("> ")
+                if option == 1:
+                    break
+                elif option == 2:
+                    return False
+
+        else:
+            print(
+                f"O evento possui {qtd_participantes} jogadores inscritos, o que impossibilita o duelo entre todos. Não é possível prosseguir com a operação."
+            )
+            return False
+        
+    return eventos.start_event(usuario_evento[0])

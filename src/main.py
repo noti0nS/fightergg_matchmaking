@@ -115,8 +115,9 @@ def _manage_events_submenu(user):
         else:
             match option:
                 case 1:
-                    # TODO _start_event()
-                    pass
+                    em_andamento = events.start_event(selected_event)
+                    if em_andamento:
+                        ui_utils.clear_console()
                 case 2:
                     # TODO GABRIEL: _edit_event_info()
                     pass
