@@ -21,6 +21,12 @@ def show_banner():
     )
 
 
+def pretty_message(message):
+    print("\n" + "=" * 60)
+    print(message)
+    print("=" * 60 + "\n")
+
+
 def get_menu_option(prompt: str, min_option: int, max_option: int) -> int:
     try:
         option = int(input(prompt))
