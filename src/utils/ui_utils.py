@@ -21,7 +21,7 @@ def show_banner():
     )
 
 
-def pretty_message(message):
+def pretty_message(message: str):
     print("\n" + "=" * 60)
     print(message)
     print("=" * 60 + "\n")

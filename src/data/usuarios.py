@@ -39,3 +39,22 @@ def check_nickname_exists(nickname: str) -> bool:
         return result[0] > 0
     finally:
         db.close_connection(conn, cursor)
+
+
+def create_user(nome_completo, nickname, email, senha):
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return False
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO Usuarios(nome_completo, nickname, email, senha) VALUES (%s, %s, %s, %s)",
+            (nome_completo, nickname, email, senha),
+        )
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"[create_user]: {e}")
+        return False
+    finally:
+        db.close_connection(conn, cursor)

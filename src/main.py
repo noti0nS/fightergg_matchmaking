@@ -17,14 +17,16 @@ def main():
         if option == -1:
             continue
 
+        ui_utils.clear_console()
+
         user: tuple = None
         match option:
             case 1:
-                ui_utils.clear_console()
                 user = auth.login()
             case 2:
-                ui_utils.clear_console()
-                auth.register()
+                if auth.register():
+                    ui_utils.clear_console()
+                    ui_utils.pretty_message("Usuário cadastrado com sucesso!")
             case 3:
                 break
 
@@ -69,31 +71,33 @@ def main():
 
 
 def _list_events_submenu(user):
-    print("LISTA DE EVENTOS ATIVOS")
-    
+    ui_utils.pretty_message("LISTA DE EVENTOS ATIVOS")
+
     ui_utils.show_banner()
 
     try:
-        usuario_id = user[0] # Pega o ID do usuário
-        events_list = events.fetch_active_events_by_user(usuario_id)#Busca os eventos ativos do usuário
-        
+        usuario_id = user[0]  # Pega o ID do usuário
+        events_list = events.fetch_active_events_by_user(
+            usuario_id
+        )  # Busca os eventos ativos do usuário
+
         if not events_list:
-            
+
             print(f"\n{len(events_list)}) evento(s) ativo(s) encontrado(s):\n")
         for event in events_list:
             for evento in events_list:
                 (
                     id,
-                    titulo, 
+                    titulo,
                     descricao,
                     data_inicio,
                     data_fim,
                     em_andamento,
                     valor_recompensa,
                     qtd_players,
-                    qtd_subscribed_players
+                    qtd_subscribed_players,
                 ) = evento
-                
+
                 status = "Em Andamento" if em_andamento else "Não Iniciado"
                 print(f"ID: {id}")
                 print(f"Título: {titulo}")
@@ -104,18 +108,21 @@ def _list_events_submenu(user):
                 print(f"Valor da Recompensa: {valor_recompensa}")
                 print(f"Quantidade de Jogadores: {qtd_players}")
                 print(f"Quantidade de Jogadores Inscritos: {qtd_subscribed_players}")
-                print("--"*30)
+                print("--" * 30)
 
     except Exception as e:
         print(f"Ocorreu um erro ao listar os eventos: {e}")
 
+
 def _join_event_submenu(user):
-    print("PARTICIPAR DE EVENTOS")
-    
+    ui_utils.pretty_message("PARTICIPAR DE EVENTOS")
+
     ui_utils.show_banner()
     try:
-        usuario_id = user[0] # Pega o ID do usuário
-        events_list = events.fetch_active_events_by_user(usuario_id)#Buscar os eventos ativos do usuário
+        usuario_id = user[0]  # Pega o ID do usuário
+        events_list = events.fetch_active_events_by_user(
+            usuario_id
+        )  # Buscar os eventos ativos do usuário
 
         if not events_list:
             print(f"\n{len(events_list)} evento(s) ativo(s) encontrado(s):\n")
@@ -124,16 +131,16 @@ def _join_event_submenu(user):
                 for evento in events_list:
                     (
                         id,
-                        titulo, 
+                        titulo,
                         descricao,
                         data_inicio,
                         data_fim,
                         em_andamento,
                         valor_recompensa,
                         qtd_players,
-                        qtd_subscribed_players
+                        qtd_subscribed_players,
                     ) = evento
-                    
+
                     status = "Em Andamento" if em_andamento else "Não Iniciado"
                     print(f"ID: {id}")
                     print(f"Título: {titulo}")
@@ -143,15 +150,17 @@ def _join_event_submenu(user):
                     print(f"Status: {status}")
                     print(f"Valor da Recompensa: {valor_recompensa}")
                     print(f"Quantidade de Jogadores: {qtd_players}")
-                    print(f"Quantidade de Jogadores Inscritos: {qtd_subscribed_players}")
-                    print("--"*30)
+                    print(
+                        f"Quantidade de Jogadores Inscritos: {qtd_subscribed_players}"
+                    )
+                    print("--" * 30)
 
     except Exception as e:
         print(f"Ocorreu um erro ao listar os eventos: {e}")
 
 
 def _manage_events_submenu(user):
-    print("GERENCIAMENTO DE EVENTOS")
+    ui_utils.pretty_message("GERENCIAMENTO DE EVENTOS")
 
     selected_event = events.select_event_from_user(user[0])
     if not selected_event:
