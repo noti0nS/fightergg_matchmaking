@@ -44,7 +44,7 @@ def _display_event_card(usuario_evento):
 Inscrições: {usuario_evento[3]} até {usuario_evento[4]}
 Recompensa: {usuario_evento[6]} \t\t\t Participantes: {qtd_participantes}/{qtd_players} {'(FULL)' if qtd_players == qtd_participantes else ''}
 Game: {usuario_evento[9]}
-Em andamento: {'SIM' if [usuario_evento[5]] else 'NÃO'}
+Em andamento: {'SIM' if usuario_evento[5] else 'NÃO'}
 --------------------------------------------------------------------------"""
     )
 
