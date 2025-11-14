@@ -36,6 +36,6 @@ def calculate_rounds_based_on_player_count(qtd_players):
 
 def get_next_acceptable_limit(qtd_players):
     for limit in QTD_PLAYERS_LIMITS:
-        if qtd_players < limit:
+        if qtd_players <= limit:
             return limit
     return QTD_PLAYERS_LIMITS[-1]

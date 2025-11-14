@@ -1,5 +1,5 @@
 from data import eventos
-from utils import type_utils, ui_utils
+from utils import type_utils, ui_utils, events_utils
 
 
 def select_event_from_user(usuario_id):
@@ -54,7 +54,10 @@ def start_event(usuario_evento) -> bool:
     qtd_participantes = usuario_evento[8]
 
     if qtd_players > qtd_participantes:
-        if qtd_participantes % 2 == 0:
+        acceptable_qtd_players = events_utils.get_next_acceptable_limit(
+            qtd_participantes
+        )
+        if qtd_participantes == acceptable_qtd_players:
             print(
                 f"O evento possui {qtd_participantes} jogadores inscritos de um limite de {qtd_players}. Deseja prosseguir mesmo assim?"
             )
@@ -72,5 +75,5 @@ def start_event(usuario_evento) -> bool:
                 f"O evento possui {qtd_participantes} jogadores inscritos, o que impossibilita o duelo entre todos. Não é possível prosseguir com a operação."
             )
             return False
-        
+
     return eventos.start_event(usuario_evento[0])
