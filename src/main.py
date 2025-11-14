@@ -33,7 +33,7 @@ def main():
 
         ui_utils.show_banner()
 
-        print(f"Seja bem vindo, {user[1]}!\n")
+        ui_utils.pretty_message(f"Seja bem vindo(a), {user[1]}!")
 
         while user:
             print("[1] - Listar Eventos")
@@ -158,9 +158,10 @@ def _manage_events_submenu(user):
         return
 
     ui_utils.clear_console()
+
     print(f"O que deseja fazer com o evento '{selected_event[1]}'?")
+
     em_andamento: bool = selected_event[5]
-    
     while True:
         if em_andamento:
             print("[1] - Gerenciar Partidas")
@@ -185,8 +186,12 @@ def _manage_events_submenu(user):
         else:
             match option:
                 case 1:
-                    # TODO _start_event()
-                    pass
+                    em_andamento = events.start_event(selected_event)
+                    if em_andamento:
+                        ui_utils.clear_console()
+                        ui_utils.pretty_message(
+                            f"O EVENTO '{selected_event[1]}' COMEÇOU!"
+                        )
                 case 2:
                     # TODO GABRIEL: _edit_event_info()
                     pass
