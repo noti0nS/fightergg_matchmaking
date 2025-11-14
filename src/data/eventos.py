@@ -77,7 +77,7 @@ def start_event(evento_id):
         if qtd_rounds == -1:
             return False
 
-        _generate_brackets(evento_id, qtd_rounds, user_ticket_ids, cursor)
+        _generate_rounds(evento_id, qtd_rounds, user_ticket_ids, cursor)
 
         sql = "UPDATE EVENTOS SET EM_ANDAMENTO = TRUE WHERE id = %s"
         cursor.execute(sql, (evento_id,))
@@ -92,7 +92,7 @@ def start_event(evento_id):
         db.close_connection(conn, cursor)
 
 
-def _generate_brackets(
+def _generate_rounds(
     evento_id,
     qtd_rounds,
     user_ticket_ids,
