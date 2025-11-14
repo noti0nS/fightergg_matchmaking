@@ -69,15 +69,85 @@ def main():
 
 
 def _list_events_submenu(user):
-    """
-    TODO Gabriel: Implementar Listagem de Eventos
-    """
+    print("LISTA DE EVENTOS ATIVOS")
+    
+    ui_utils.show_banner()
 
+    try:
+        usuario_id = user[0] # Pega o ID do usuário
+        events_list = events.fetch_active_events_by_user(usuario_id)#Busca os eventos ativos do usuário
+        
+        if not events_list:
+            
+            print(f"\n{len(events_list)}) evento(s) ativo(s) encontrado(s):\n")
+        for event in events_list:
+            for evento in events_list:
+                (
+                    id,
+                    titulo, 
+                    descricao,
+                    data_inicio,
+                    data_fim,
+                    em_andamento,
+                    valor_recompensa,
+                    qtd_players,
+                    qtd_subscribed_players
+                ) = evento
+                
+                status = "Em Andamento" if em_andamento else "Não Iniciado"
+                print(f"ID: {id}")
+                print(f"Título: {titulo}")
+                print(f"Descrição: {descricao}")
+                print(f"Data de Início das Inscrições: {data_inicio}")
+                print(f"Data de Fim das Inscrições: {data_fim}")
+                print(f"Status: {status}")
+                print(f"Valor da Recompensa: {valor_recompensa}")
+                print(f"Quantidade de Jogadores: {qtd_players}")
+                print(f"Quantidade de Jogadores Inscritos: {qtd_subscribed_players}")
+                print("--"*30)
+
+    except Exception as e:
+        print(f"Ocorreu um erro ao listar os eventos: {e}")
 
 def _join_event_submenu(user):
-    """
-    TODO Gabriel: Implementar Participar de Eventos
-    """
+    print("PARTICIPAR DE EVENTOS")
+    
+    ui_utils.show_banner()
+    try:
+        usuario_id = user[0] # Pega o ID do usuário
+        events_list = events.fetch_active_events_by_user(usuario_id)#Buscar os eventos ativos do usuário
+
+        if not events_list:
+            print(f"\n{len(events_list)} evento(s) ativo(s) encontrado(s):\n")
+
+            for event in events_list:
+                for evento in events_list:
+                    (
+                        id,
+                        titulo, 
+                        descricao,
+                        data_inicio,
+                        data_fim,
+                        em_andamento,
+                        valor_recompensa,
+                        qtd_players,
+                        qtd_subscribed_players
+                    ) = evento
+                    
+                    status = "Em Andamento" if em_andamento else "Não Iniciado"
+                    print(f"ID: {id}")
+                    print(f"Título: {titulo}")
+                    print(f"Descrição: {descricao}")
+                    print(f"Data de Início das Inscrições: {data_inicio}")
+                    print(f"Data de Fim das Inscrições: {data_fim}")
+                    print(f"Status: {status}")
+                    print(f"Valor da Recompensa: {valor_recompensa}")
+                    print(f"Quantidade de Jogadores: {qtd_players}")
+                    print(f"Quantidade de Jogadores Inscritos: {qtd_subscribed_players}")
+                    print("--"*30)
+
+    except Exception as e:
+        print(f"Ocorreu um erro ao listar os eventos: {e}")
 
 
 def _manage_events_submenu(user):
