@@ -72,8 +72,82 @@ def start_event(usuario_evento) -> bool:
 
         else:
             print(
-                f"O evento possui {qtd_participantes} jogadores inscritos, o que impossibilita o duelo entre todos. Não é possível prosseguir com a operação."
+                f"O evento possui {qtd_participantes} jogadores inscritos, o que impossibilita o duelo entre todos. Você precisa ter ao menos {acceptable_qtd_players} jogadores registrados para prosseguir."
             )
             return False
 
-    return eventos.start_event(usuario_evento[0])
+    return eventos.activate_event(usuario_evento[0])
+
+
+def manage_event_matches(evento_id):
+    evento_data = eventos.fetch_event_headline(evento_id)
+    matches_data = eventos.fetch_event_matches(evento_id)
+    current_round = _get_current_round(matches_data)
+
+    print(
+        f"""
+{'*' * 50}
+{evento_data[0]}
+GAME: {evento_data[2]}
+RECOMPENSA: R$ {evento_data[1]}
+ROUND: {current_round}
+{'*' * 50}"""
+    )
+
+    leave = False
+    while not leave:
+        _display_event_matches_tree(matches_data, current_round)
+        print("[1] - Definir vencedor")
+        print("[2] - Editar round da partida")
+        print("[3] - Voltar ao menu de Eventos")
+
+        while True:
+            option = ui_utils.get_menu_option("> ", 1, 3)
+            if option == -1:
+                continue
+
+            ui_utils.clear_console()
+
+            match option:
+                case 1:
+                    # TODO: _set_match_winner_submenu()
+                    break
+                case 2:
+                    # TODO: _set_match_round_submenu()
+                    break
+                case 3:
+                    leave = True
+                    break
+
+
+def _get_current_round(matches_data):
+    for i in range(len(matches_data)):
+        # verifica se nas partidas do round atual (i + 1) há alguma em que não há vencedor definido.
+        any_match_is_happening = any((not m[3] for m in matches_data[i]))
+        if any_match_is_happening:
+            return i + 1
+    return -1  # all rounds are done
+
+
+def _display_event_matches_tree(matches_data: list[list], current_round: int):
+    rounds_to_display = len(matches_data) - (len(matches_data) - current_round)
+    for i in range(rounds_to_display):
+        ui_utils.pretty_message(f"ROUND {i + 1}")
+        for match in matches_data[i]:
+            winner_id = match[3]
+            if winner_id:
+                print(
+                    f"""{match[7]} {_show_winner_text(match[1], winner_id)} x {match[8]} {_show_winner_text(match[2], winner_id)} 
+ROUND NA PARTIDA: {match[6]}
+"""
+                )
+            else:
+                print(
+                    f"""[{match[0]}] {match[7]} x {match[8]}
+ROUND NA PARTIDA: {match[6]}
+"""
+                )
+
+
+def _show_winner_text(player_id, winner_id):
+    "(VENCEDOR)" if player_id == winner_id else ""

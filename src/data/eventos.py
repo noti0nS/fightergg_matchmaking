@@ -58,7 +58,7 @@ ORDER BY ID
         db.close_connection(conn, cursor)
 
 
-def start_event(evento_id):
+def activate_event(evento_id):
     try:
         conn = db.create_connection()
         if not conn:
@@ -150,3 +150,88 @@ def _generate_rounds(
             sql = "INSERT INTO EVENTOS_PARTIDAS(EVENTO_ID, NEXT_MATCH_ID, ROUND) VALUES %s RETURNING ID;"
             execute_values(cursor, sql, data)
             next_inserted_match_ids = [row[0] for row in cursor.fetchall()]
+
+
+def fetch_event_headline(evento_id):
+    """
+    Returns an object of (
+       titulo_evento,
+       valor_recompensa,
+       titulo_game)
+    """
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return None
+        cursor = conn.cursor()
+        sql = """
+SELECT
+	E.TITULO,
+	E.VALOR_RECOMPENSA,
+	G.TITULO
+FROM
+	EVENTOS E
+	INNER JOIN GAMES G ON E.GAME_ID = G.ID
+WHERE
+	E.ID = %s
+"""
+        cursor.execute(sql, (evento_id,))
+        return cursor.fetchone()
+    finally:
+        db.close_connection(conn, cursor)
+
+
+def fetch_event_matches(evento_id):
+    """
+    Returns objects of (
+        id,
+        player1_id,
+        player2_id,
+        winner_id,
+        next_match_id,
+        round,
+        round_game,
+        player1_nickname,
+        player2_nickname)
+
+    grouped by round.
+    """
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return None
+        cursor = conn.cursor()
+        sql = """
+SELECT
+    EP.ID,
+	EP.PLAYER1_ID,
+	EP.PLAYER2_ID,
+	EP.WINNER_ID,
+	EP.NEXT_MATCH_ID,
+	EP.ROUND,
+	EP.ROUND_GAME,
+	UP1.NICKNAME AS PLAYER1_NICKNAME,
+	UP2.NICKNAME AS PLAYER2_NICKNAME
+FROM
+	EVENTOS_PARTIDAS EP
+	LEFT JOIN USUARIOS UP1 ON UP1.ID = EP.PLAYER1_ID
+	LEFT JOIN USUARIOS UP2 ON UP2.ID = EP.PLAYER2_ID
+WHERE
+	EP.EVENTO_ID = %s
+ORDER BY
+	ROUND, ID
+"""
+        cursor.execute(sql, (evento_id,))
+        raw_matches_data = cursor.fetchall()
+
+        qtd_rounds = raw_matches_data[-1][5]  # Recupera o round do último registro
+        result = [[] for _ in range(qtd_rounds)]
+
+        for match in raw_matches_data:
+            result[match[5] - 1].append(
+                match
+            )  # Utiliza o round da partida como indice para adicionar na lista.
+
+        return result
+    finally:
+        db.close_connection(conn, cursor)

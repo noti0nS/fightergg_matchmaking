@@ -38,8 +38,8 @@ def main():
         ui_utils.pretty_message(f"Seja bem vindo(a), {user[1]}!")
 
         while user:
-            print("[1] - Listar Eventos")
-            print("[2] - Participar de Eventos")
+            print("[1] - Participar de Eventos")
+            print("[2] - Acompanhar Eventos")
             print("[3] - Gerenciar Eventos")
             print("[4] - Criar Evento")
             print("[5] - Excluir Evento")
@@ -53,9 +53,9 @@ def main():
 
             match option:
                 case 1:
-                    _list_events_submenu(user)
-                case 2:
                     _join_event_submenu(user)
+                case 2:
+                    _show_events_joined_submenu(user)
                 case 3:
                     _manage_events_submenu(user)
                 case 4:
@@ -70,7 +70,7 @@ def main():
     print("Até breve! :-)")
 
 
-def _list_events_submenu(user):
+def _show_events_joined_submenu(user):
     ui_utils.pretty_message("LISTA DE EVENTOS ATIVOS")
 
     ui_utils.show_banner()
@@ -184,11 +184,12 @@ def _manage_events_submenu(user):
         if option == -1:
             continue
 
+        ui_utils.clear_console()
+
         if em_andamento:
             match option:
                 case 1:
-                    # TODO: _manage_matches()
-                    pass
+                    events.manage_event_matches(selected_event[0])
                 case 2:
                     ui_utils.show_banner()
                     break
