@@ -204,7 +204,6 @@ def _manage_events_submenu(user):
                             f"O EVENTO '{selected_event[1]}' COMEÇOU!"
                         )
                 case 2:
-                    case 2:
                     ui_utils.clear_console()
                     events.edit_event_info(selected_event)
                 case 3:
