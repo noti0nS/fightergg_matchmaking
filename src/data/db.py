@@ -22,3 +22,43 @@ def close_connection(
         cursor.close()
     if conn:
         conn.close()
+
+def update_event_in_db(event: dict) -> bool:
+   
+    conn = None
+    cursor = None
+
+    try:
+        conn = create_connection()
+        if not conn:
+            print("Erro: sem conexão com o banco.")
+            return False
+
+        cursor = conn.cursor()
+
+        query = """
+            UPDATE eventos
+            SET nome = %s,
+                data_evento = %s,
+                descricao = %s
+            WHERE id = %s;
+        """
+
+        cursor.execute(query, (
+            event["nome"],
+            event["data"],
+            event["descricao"],
+            event["id"]
+        ))
+
+        conn.commit()
+
+        return True
+
+    except Exception as e:
+        print(f"[update_event_in_db] Erro ao atualizar evento: {e}")
+        return False
+
+    finally:
+        close_connection(conn, cursor)
+
