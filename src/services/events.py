@@ -18,9 +18,6 @@ def select_event_from_user(usuario_id):
             event_id = type_utils.get_safe_int(
                 "Informe o ID do evento que você deseja gerenciar: "
             )
-            if not event_id:
-                continue
-            # event_id = int(input("Informe o ID do evento que você deseja gerenciar: "))
             found_event = next(
                 (ue for ue in usuario_eventos if ue[0] == event_id), None
             )
@@ -80,25 +77,30 @@ def start_event(usuario_evento) -> bool:
 
 
 def manage_event_matches(evento_id):
-    evento_data = eventos.fetch_event_headline(evento_id)
-    matches_data = eventos.fetch_event_matches(evento_id)
-    current_round = _get_current_round(matches_data)
+    leave = False
+    load_data = True
 
-    print(
-        f"""
+    while not leave:
+        if load_data:
+            evento_data = eventos.fetch_event_headline(evento_id)
+            matches_data = eventos.fetch_event_matches(evento_id)
+            current_round = _get_current_round(matches_data)
+        load_data = False
+
+        print(
+            f"""
 {'*' * 50}
 {evento_data[0]}
 GAME: {evento_data[2]}
 RECOMPENSA: R$ {evento_data[1]}
 ROUND: {current_round}
 {'*' * 50}"""
-    )
+        )
 
-    leave = False
-    while not leave:
         _display_event_matches_tree(matches_data, current_round)
+
         print("[1] - Definir vencedor")
-        print("[2] - Editar round da partida")
+        print("[2] - Avançar round")
         print("[3] - Voltar ao menu de Eventos")
 
         while True:
@@ -106,17 +108,19 @@ ROUND: {current_round}
             if option == -1:
                 continue
 
-            ui_utils.clear_console()
-
             match option:
                 case 1:
                     # TODO: _set_match_winner_submenu()
+                    load_data = True
                     break
                 case 2:
-                    # TODO: _set_match_round_submenu()
+                    if _set_match_round_submenu(matches_data[current_round - 1]):
+                        load_data = True
+                        ui_utils.clear_console()
                     break
                 case 3:
                     leave = True
+                    ui_utils.clear_console()
                     break
 
 
@@ -151,3 +155,12 @@ ROUND NA PARTIDA: {match[6]}
 
 def _show_winner_text(player_id, winner_id):
     "(VENCEDOR)" if player_id == winner_id else ""
+
+
+def _set_match_round_submenu(matches: list):
+    match_id = type_utils.get_safe_int("Selecione o ID da partida: ")
+    current_match_round = next((m[6] for m in matches if m[0] == match_id), None)
+    if not current_match_round:
+        print(f"A partida '{match_id}' não está disponível para seleção.")
+        return False
+    return eventos.increment_match_round(match_id, current_match_round)
