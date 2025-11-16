@@ -78,14 +78,12 @@ def start_event(usuario_evento) -> bool:
 
 def manage_event_matches(evento_id):
     leave = False
-    load_data = True
+    render_menu = True
 
     while not leave:
-        if load_data:
-            evento_data = eventos.fetch_event_headline(evento_id)
-            matches_data = eventos.fetch_event_matches(evento_id)
-            current_round = _get_current_round(matches_data)
-        load_data = False
+        evento_data = eventos.fetch_event_headline(evento_id)
+        matches_data = eventos.fetch_event_matches(evento_id)
+        current_round = _get_current_round(matches_data)
 
         print(
             f"""
@@ -97,31 +95,37 @@ ROUND: {current_round}
 {'*' * 50}"""
         )
 
-        _display_event_matches_tree(matches_data, current_round)
-
-        print("[1] - Definir vencedor")
-        print("[2] - Avançar round")
-        print("[3] - Voltar ao menu de Eventos")
+        _display_event_matches(matches_data, current_round)
 
         while True:
+            if render_menu:
+                print("[1] - Definir vencedor")
+                print("[2] - Avançar round")
+                print("[3] - Voltar ao menu de Eventos")
+
             option = ui_utils.get_menu_option("> ", 1, 3)
             if option == -1:
+                render_menu = False
                 continue
+
+            print()
 
             match option:
                 case 1:
                     # TODO: _set_match_winner_submenu()
-                    load_data = True
                     break
                 case 2:
                     if _set_match_round_submenu(matches_data[current_round - 1]):
-                        load_data = True
-                        ui_utils.clear_console()
-                    break
+                        break
+                    render_menu = True
                 case 3:
                     leave = True
-                    ui_utils.clear_console()
                     break
+
+            print()
+
+        render_menu = True
+        ui_utils.clear_console()
 
 
 def _get_current_round(matches_data):
@@ -133,7 +137,7 @@ def _get_current_round(matches_data):
     return -1  # all rounds are done
 
 
-def _display_event_matches_tree(matches_data: list[list], current_round: int):
+def _display_event_matches(matches_data: list[list], current_round: int):
     rounds_to_display = len(matches_data) - (len(matches_data) - current_round)
     for i in range(rounds_to_display):
         ui_utils.pretty_message(f"ROUND {i + 1}")
