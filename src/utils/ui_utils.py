@@ -27,7 +27,7 @@ def pretty_message(message: str):
 
 
 def divider(length=30):
-    print(f"\n{'+-+' * length}\n")
+    print(f"\n{'+-*' * length}\n")
 
 
 def get_menu_option(prompt: str, min_option: int, max_option: int) -> int:

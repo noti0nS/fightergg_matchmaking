@@ -273,7 +273,7 @@ ORDER BY
         db.close_connection(conn, cursor)
 
 
-def increment_match_round(match_id, current_match_round):
+def increment_match_round(match_id):
     try:
         conn = db.create_connection()
         if not conn:
@@ -282,11 +282,11 @@ def increment_match_round(match_id, current_match_round):
         sql = """
 UPDATE EVENTOS_PARTIDAS
 SET
-	ROUND_GAME = %s
+	ROUND_GAME = ROUND_GAME + 1
 WHERE
 	ID = %s
 """
-        cursor.execute(sql, (current_match_round + 1, match_id))
+        cursor.execute(sql, (match_id,))
         conn.commit()
         return True
     except Exception as e:

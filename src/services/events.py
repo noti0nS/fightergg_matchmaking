@@ -79,7 +79,6 @@ def start_event(usuario_evento) -> bool:
 def manage_event_matches(evento_id):
     leave = False
     render_menu = True
-
     while not leave:
         evento_data = eventos.fetch_event_headline(evento_id)
         if evento_data[3]:
@@ -100,10 +99,13 @@ def manage_event_matches(evento_id):
 
             option = ui_utils.get_menu_option("> ", 1, 3)
             if option == -1:
+                render_menu = False
                 continue
             elif option == 3:
                 leave = True
                 break
+
+            render_menu = True
 
             ui_utils.divider()
 
@@ -114,23 +116,20 @@ def manage_event_matches(evento_id):
                 None,
             )
             if not match:
-                ui_utils.clear_console()
-                render_menu = True
                 print(f"A partida '{match_id}' não está disponível para seleção.")
+                ui_utils.divider()
                 continue
 
             match option:
                 case 1:
+                    ui_utils.divider()
                     if _set_match_winner_submenu(match):
                         break
-                    render_menu = True
                 case 2:
-                    if eventos.increment_match_round(match[0], match[6]):
+                    if eventos.increment_match_round(match_id):
                         break
-                    render_menu = True
             print()
 
-        render_menu = True
         ui_utils.clear_console()
 
 
