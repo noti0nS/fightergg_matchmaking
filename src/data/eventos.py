@@ -157,7 +157,8 @@ def fetch_event_headline(evento_id):
     Returns an object of (
        titulo_evento,
        valor_recompensa,
-       titulo_game)
+       titulo_game,
+       winner_nickname)
     """
     try:
         conn = db.create_connection()
@@ -168,10 +169,12 @@ def fetch_event_headline(evento_id):
 SELECT
 	E.TITULO,
 	E.VALOR_RECOMPENSA,
-	G.TITULO
+	G.TITULO,
+    U.NICKNAME
 FROM
 	EVENTOS E
 	INNER JOIN GAMES G ON E.GAME_ID = G.ID
+    LEFT JOIN USUARIOS U ON U.ID = E.WINNER_ID
 WHERE
 	E.ID = %s
 """
@@ -255,5 +258,71 @@ WHERE
         return True
     except Exception as e:
         print(f"[increment_match_round]: {e}")
+        return False
     finally:
         db.close_connection(conn, cursor)
+
+
+def set_match_winner(match_id, winner_id):
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return False
+        cursor = conn.cursor()
+        sql = """
+UPDATE EVENTOS_PARTIDAS
+SET
+	WINNER_ID = %s
+WHERE
+	ID = %s
+RETURNING EVENTO_ID, NEXT_MATCH_ID;
+"""
+        cursor.execute(sql, (winner_id, match_id))
+        (evento_id, next_match_id) = cursor.fetchone()
+        if next_match_id:
+            _set_player_next_match(winner_id, next_match_id, cursor)
+        else:
+            _finish_game(winner_id, evento_id, cursor)
+
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"[set_match_winner]: {e}")
+        return False
+    finally:
+        db.close_connection(conn, cursor)
+
+
+def _set_player_next_match(
+    winner_id, next_match_id, cursor: psycopg2.extensions.cursor
+):
+    sql = "SELECT PLAYER1_ID, PLAYER2_ID FROM EVENTOS_PARTIDAS WHERE ID = %s"
+    cursor.execute(sql, (next_match_id,))
+    next_match = cursor.fetchone()
+    if next_match[0]:
+        sql = "UPDATE EVENTOS_PARTIDAS SET PLAYER2_ID = %s WHERE ID = %s"
+    else:
+        sql = "UPDATE EVENTOS_PARTIDAS SET PLAYER1_ID = %s WHERE ID = %s"
+    cursor.execute(
+        sql,
+        (
+            winner_id,
+            next_match_id,
+        ),
+    )
+
+
+def _finish_game(winner_id, evento_id, cursor: psycopg2.extensions.cursor):
+    sql = """
+UPDATE EVENTOS
+SET
+	WINNER_ID = %s
+WHERE
+	ID = %s
+RETURNING VALOR_RECOMPENSA;
+"""
+    cursor.execute(sql, (winner_id, evento_id))
+    valor_recompensa = cursor.fetchone()[0]
+    if valor_recompensa:
+        sql = "UPDATE USUARIOS SET BALANCE = BALANCE + %s WHERE ID = %s"
+        cursor.execute(sql, (valor_recompensa, winner_id))
