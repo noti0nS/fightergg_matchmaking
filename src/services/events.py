@@ -1,6 +1,5 @@
 from data import eventos
 from utils import type_utils, ui_utils, events_utils
-from data.db import update_event_in_db
 
 
 def select_event_from_user(usuario_id):

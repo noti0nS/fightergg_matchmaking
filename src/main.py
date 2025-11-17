@@ -200,9 +200,8 @@ def _manage_events_submenu(user):
                     em_andamento = events.start_event(selected_event)
                     if em_andamento:
                         ui_utils.clear_console()
-                        ui_utils.pretty_message(
-                            f"O EVENTO '{selected_event[1]}' COMEÇOU!"
-                        )
+                        msg = f"O EVENTO '{selected_event[1]}' COMEÇOU!"
+                        ui_utils.pretty_message(msg)
                 case 2:
                     ui_utils.clear_console()
                     if events.edit_event_info(selected_event):
