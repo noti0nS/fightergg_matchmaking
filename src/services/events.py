@@ -1,5 +1,6 @@
 from data import eventos
 from utils import type_utils, ui_utils, events_utils
+from data.db import update_event_in_db
 
 
 def select_event_from_user(usuario_id):
@@ -195,3 +196,35 @@ def _set_match_winner_submenu(match):
         winner_id = match[option]
 
     return eventos.set_match_winner(match[0], winner_id)
+
+
+def edit_event_info(event):
+
+    # Mostra o evento que será editado
+    ui_utils.clear_console()
+    ui_utils.show_banner("Editar Informações do Evento")
+
+    # Lista/tupla
+    print(f"Editando o evento: {event[1]} (ID: {event[0]})")
+
+    # Pede novos dados ao usuário
+    novo_nome = input("Novo nome (ENTER para manter): ").strip()
+    nova_data = input("Nova data (ENTER para manter): ").strip()
+    nova_descricao = input("Nova descrição (ENTER para manter): ").strip()
+
+    # Cria o novo evento, mantendo valores antigos se o usuário não fornecer novos
+    updated_event = {
+        "id": event[0],
+        "nome": novo_nome if novo_nome else event[1],
+        "data": nova_data if nova_data else event[2],
+        "descricao": nova_descricao if nova_descricao else event[3],
+    }
+    # Chama a atualização no banco de dados
+    sucesso = eventos.update_event(updated_event)
+
+    if sucesso:
+        print("Evento atualizado com sucesso!")
+    else:
+        print("Erro ao atualizar o evento.")
+
+    return sucesso

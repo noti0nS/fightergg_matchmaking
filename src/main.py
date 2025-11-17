@@ -1,3 +1,4 @@
+from unittest import case
 from dotenv import load_dotenv
 from utils import ui_utils
 from services import auth, events
@@ -203,8 +204,9 @@ def _manage_events_submenu(user):
                             f"O EVENTO '{selected_event[1]}' COMEÇOU!"
                         )
                 case 2:
-                    # TODO GABRIEL: _edit_event_info()
-                    pass
+                    ui_utils.clear_console()
+                    if events.edit_event_info(selected_event):
+                        ui_utils.clear_console()
                 case 3:
                     ui_utils.show_banner()
                     break

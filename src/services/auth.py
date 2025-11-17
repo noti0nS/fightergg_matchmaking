@@ -52,7 +52,7 @@ def register() -> bool:
             print(password_status)
             return False
 
-        # Validar erros
+        # Validação de erros de email e nick 
         if usuarios.check_email_exists(email):
             print("Erro: Este e-mail já está cadastrado")
             return False
@@ -61,7 +61,7 @@ def register() -> bool:
             print("Erro: Nickname já está em uso")
             return False
 
-        # Criptografia de senha
+        # Criptografia de senha, em hash
         hashed_password = password_utils.generate_hashed_password(password)
         return usuarios.create_user(nome_completo, nickname, email, hashed_password)
 
