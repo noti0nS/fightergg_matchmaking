@@ -1,5 +1,5 @@
 from utils import validators_utils, password_utils
-from data import usuarios
+from data import usuarios_data
 
 import getpass
 
@@ -20,7 +20,7 @@ def login() -> tuple | None:
             print(password_strength_result)
             return None
 
-        user = usuarios.get_user_by_email(email)
+        user = usuarios_data.get_user_by_email(email)
         if not password_utils.verify_password(password, user[2]):
             print(
                 "As credencias estão inválidas! Verifique se o e-mail e a senha foram digitados corretamente."
@@ -53,17 +53,17 @@ def register() -> bool:
             return False
 
         # Validação de erros de email e nick
-        if usuarios.check_email_exists(email):
+        if usuarios_data.check_email_exists(email):
             print("Erro: Este e-mail já está cadastrado")
             return False
 
-        if usuarios.check_nickname_exists(nickname):
+        if usuarios_data.check_nickname_exists(nickname):
             print("Erro: Nickname já está em uso")
             return False
 
         # Criptografia de senha, em hash
         hashed_password = password_utils.generate_hashed_password(password)
-        return usuarios.create_user(nome_completo, nickname, email, hashed_password)
+        return usuarios_data.create_user(nome_completo, nickname, email, hashed_password)
 
     except Exception as e:
         print(f"Um erro inesperado ocorreu durante o registro: {e}")
@@ -71,7 +71,7 @@ def register() -> bool:
 
 
 def show_personal_info(usuario_id):
-    user_info = usuarios.get_user_info(usuario_id)
+    user_info = usuarios_data.get_user_info(usuario_id)
     if not user_info:
         print("Não foi possível encontrar informações para o Usuário logado.")
         return

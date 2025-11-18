@@ -1,10 +1,10 @@
-from data import eventos
+from data import eventos_data
 from utils import type_utils, ui_utils, events_utils
 
 
 def select_event_from_user(usuario_id):
     try:
-        usuario_eventos = eventos.fetch_active_events_by_user(usuario_id)
+        usuario_eventos = eventos_data.fetch_active_events_by_user(usuario_id)
         if len(usuario_eventos) == 0:
             print(
                 "Não foi possível encontrar nenhum evento ativo para o usuário logado."
@@ -73,19 +73,19 @@ def start_event(usuario_evento) -> bool:
             )
             return False
 
-    return eventos.activate_event(usuario_evento[0])
+    return eventos_data.activate_event(usuario_evento[0])
 
 
 def manage_event_matches(evento_id):
     leave = False
     render_menu = True
     while not leave:
-        evento_data = eventos.fetch_event_headline(evento_id)
+        evento_data = eventos_data.fetch_event_headline(evento_id)
         if evento_data[3]:
             _display_event_headline(evento_data)
             break
 
-        matches_data = eventos.fetch_event_matches(evento_id)
+        matches_data = eventos_data.fetch_event_matches(evento_id)
         current_round = _get_current_round(matches_data)
 
         _display_event_headline(evento_data, current_round)
@@ -126,7 +126,7 @@ def manage_event_matches(evento_id):
                     if _set_match_winner_submenu(match):
                         break
                 case 2:
-                    if eventos.increment_match_round(match_id):
+                    if eventos_data.increment_match_round(match_id):
                         break
             print()
 
@@ -193,7 +193,7 @@ def _set_match_winner_submenu(match):
             return False
         winner_id = match[option]
 
-    return eventos.set_match_winner(match[0], winner_id)
+    return eventos_data.set_match_winner(match[0], winner_id)
 
 
 def edit_event_info(selected_event) -> bool:
@@ -223,7 +223,7 @@ def edit_event_info(selected_event) -> bool:
         ),
     }
     # Chama a atualização no banco de dados
-    sucesso = eventos.update_event(updated_event)
+    sucesso = eventos_data.update_event(updated_event)
 
     if sucesso:
         print("Evento atualizado com sucesso!")

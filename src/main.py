@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from utils import ui_utils
-from services import auth, events
+from services import auth_service, eventos_service
 
 
 def main():
@@ -22,9 +22,9 @@ def main():
         user: tuple = None
         match option:
             case 1:
-                user = auth.login()
+                user = auth_service.login()
             case 2:
-                if auth.register():
+                if auth_service.register():
                     ui_utils.clear_console()
                     ui_utils.pretty_message("Usuário cadastrado com sucesso!")
             case 3:
@@ -64,7 +64,7 @@ def main():
                 case 5:
                     _remove_event_submenu(user)
                 case 6:
-                    auth.show_personal_info(user[0])
+                    auth_service.show_personal_info(user[0])
                     ui_utils.divider()
                 case 7:
                     user = None
@@ -81,7 +81,7 @@ def _show_events_joined_submenu(user):
 
     try:
         usuario_id = user[0]  # Pega o ID do usuário
-        events_list = events.fetch_active_events_by_user(
+        events_list = eventos_service.fetch_active_events_by_user(
             usuario_id
         )  # Busca os eventos ativos do usuário
 
@@ -124,7 +124,7 @@ def _join_event_submenu(user):
     ui_utils.show_banner()
     try:
         usuario_id = user[0]  # Pega o ID do usuário
-        events_list = events.fetch_active_events_by_user(
+        events_list = eventos_service.fetch_active_events_by_user(
             usuario_id
         )  # Buscar os eventos ativos do usuário
 
@@ -166,7 +166,7 @@ def _join_event_submenu(user):
 def _manage_events_submenu(user):
     ui_utils.pretty_message("GERENCIAMENTO DE EVENTOS")
 
-    selected_event = events.select_event_from_user(user[0])
+    selected_event = eventos_service.select_event_from_user(user[0])
     if not selected_event:
         return
 
@@ -193,21 +193,21 @@ def _manage_events_submenu(user):
         if em_andamento:
             match option:
                 case 1:
-                    events.manage_event_matches(selected_event[0])
+                    eventos_service.manage_event_matches(selected_event[0])
                 case 2:
                     ui_utils.show_banner()
                     break
         else:
             match option:
                 case 1:
-                    em_andamento = events.start_event(selected_event)
+                    em_andamento = eventos_service.start_event(selected_event)
                     if em_andamento:
                         ui_utils.clear_console()
                         msg = f"O EVENTO '{selected_event[1]}' COMEÇOU!"
                         ui_utils.pretty_message(msg)
                 case 2:
                     ui_utils.clear_console()
-                    if events.edit_event_info(selected_event):
+                    if eventos_service.edit_event_info(selected_event):
                         ui_utils.clear_console()
                 case 3:
                     ui_utils.show_banner()
