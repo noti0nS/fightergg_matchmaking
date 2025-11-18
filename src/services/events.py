@@ -196,26 +196,31 @@ def _set_match_winner_submenu(match):
     return eventos.set_match_winner(match[0], winner_id)
 
 
-def edit_event_info(event):
+def edit_event_info(selected_event) -> bool:
+    id_evento = selected_event[0]
+    titulo = selected_event[1]
 
     # Mostra o evento que será editado
     ui_utils.clear_console()
-    ui_utils.show_banner("Editar Informações do Evento")
 
     # Lista/tupla
-    print(f"Editando o evento: {event[1]} (ID: {event[0]})")
+    print(f"Editando o evento: {titulo} (ID: {id_evento})")
 
     # Pede novos dados ao usuário
-    novo_nome = input("Novo nome (ENTER para manter): ").strip()
-    nova_data = input("Nova data (ENTER para manter): ").strip()
+    novo_titulo = input("Novo nome (ENTER para manter): ").strip()
     nova_descricao = input("Nova descrição (ENTER para manter): ").strip()
+    novo_valor_recompensa = input(
+        "Novo valor de recompensa (ENTER para manter): "
+    ).strip()
 
     # Cria o novo evento, mantendo valores antigos se o usuário não fornecer novos
     updated_event = {
-        "id": event[0],
-        "nome": novo_nome if novo_nome else event[1],
-        "data": nova_data if nova_data else event[2],
-        "descricao": nova_descricao if nova_descricao else event[3],
+        "id": id_evento,
+        "titulo": novo_titulo if novo_titulo else titulo,
+        "descricao": nova_descricao if nova_descricao else selected_event[2],
+        "valor_recompensa": (
+            float(novo_valor_recompensa) if novo_valor_recompensa else selected_event[6]
+        ),
     }
     # Chama a atualização no banco de dados
     sucesso = eventos.update_event(updated_event)

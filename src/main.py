@@ -1,4 +1,3 @@
-from unittest import case
 from dotenv import load_dotenv
 from utils import ui_utils
 from services import auth, events
@@ -216,9 +215,27 @@ def _manage_events_submenu(user):
 
 
 def _create_event_submenu(user):
-    """
-    TODO Gabriel: Implementar Criação de Evento
-    """
+    ui_utils.clear_console()
+    ui_utils.show_banner("CRIAR NOVO EVENTO")
+
+    print(f"Usuário logado: {user['Nickname']}\n")
+
+    nome = input("Nome do Evento: ").strip()
+    data_evento = input("Data do Evento (YYYY-MM-DD): ").strip()
+    descricao = input("Descrição do Evento: ").strip()
+
+    # Validação simples
+    if not nome:
+        ui_utils.pretty_message("Erro: O nome do evento não pode ser vazio.")
+        return False
+
+    if not data_evento:
+        ui_utils.pretty_message("Erro: A data do evento não pode ser vazia.")
+        return False
+
+    if not descricao:
+        ui_utils.pretty_message("Erro: A descrição do evento não pode ser vazia.")
+        return False
 
 
 def _remove_event_submenu(user):

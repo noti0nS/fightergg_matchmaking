@@ -58,7 +58,10 @@ ORDER BY ID
         db.close_connection(conn, cursor)
 
 
-def update_event(event: dict) -> bool:
+def update_event(updated_event) -> bool:
+    conn = None
+    cursor = None
+
     try:
         conn = db.create_connection()
         if not conn:
@@ -69,14 +72,20 @@ def update_event(event: dict) -> bool:
 
         query = """
             UPDATE eventos
-            SET nome = %s,
-                data_evento = %s,
-                descricao = %s
+            SET TITULO = %s,
+                DESCRICAO = %s,
+                VALOR_RECOMPENSA = %s
             WHERE id = %s;
         """
 
         cursor.execute(
-            query, (event["nome"], event["data"], event["descricao"], event["id"])
+            query,
+            (
+                updated_event["titulo"],
+                updated_event["descricao"],
+                updated_event["valor_recompensa"],
+                updated_event["id"],
+            ),
         )
 
         conn.commit()
@@ -84,7 +93,7 @@ def update_event(event: dict) -> bool:
         return True
 
     except Exception as e:
-        print(f"[update_event_in_db] Erro ao atualizar evento: {e}")
+        print(f"[update_event] Erro ao atualizar evento: {e}")
         return False
 
     finally:
