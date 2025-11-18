@@ -44,9 +44,10 @@ def main():
             print("[3] - Gerenciar Eventos")
             print("[4] - Criar Evento")
             print("[5] - Excluir Evento")
-            print("[6] - Logout")
+            print("[6] - Exibir Dados Pessoais")
+            print("[7] - Logout")
 
-            option = ui_utils.get_menu_option("> ", 1, 6)
+            option = ui_utils.get_menu_option("> ", 1, 7)
             if option == -1:
                 continue
 
@@ -64,6 +65,9 @@ def main():
                 case 5:
                     _remove_event_submenu(user)
                 case 6:
+                    auth.show_personal_info(user[0])
+                    ui_utils.divider()
+                case 7:
                     user = None
 
         ui_utils.show_banner()

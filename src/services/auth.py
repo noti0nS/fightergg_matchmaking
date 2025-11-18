@@ -52,7 +52,7 @@ def register() -> bool:
             print(password_status)
             return False
 
-        # Validação de erros de email e nick 
+        # Validação de erros de email e nick
         if usuarios.check_email_exists(email):
             print("Erro: Este e-mail já está cadastrado")
             return False
@@ -68,3 +68,15 @@ def register() -> bool:
     except Exception as e:
         print(f"Um erro inesperado ocorreu durante o registro: {e}")
         return False
+
+
+def show_personal_info(usuario_id):
+    user_info = usuarios.get_user_info(usuario_id)
+    if not user_info:
+        print("Não foi possível encontrar informações para o Usuário logado.")
+        return
+    print(f"""
+Nome Completo: {user_info[0]}
+Email: {user_info[1]}
+Nickname: {user_info[2]}
+Saldo: R$ {user_info[3]}""")

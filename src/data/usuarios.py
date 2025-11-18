@@ -58,3 +58,20 @@ def create_user(nome_completo, nickname, email, senha):
         return False
     finally:
         db.close_connection(conn, cursor)
+
+
+def get_user_info(usuario_id):
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT NOME_COMPLETO, EMAIL, NICKNAME, BALANCE FROM Usuarios WHERE id=%s",
+            (usuario_id,),
+        )
+        return cursor.fetchone()
+    except Exception as e:
+        print(f"[get_user_info]: {e}")
+    finally:
+        db.close_connection(conn, cursor)
