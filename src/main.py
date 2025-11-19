@@ -172,7 +172,7 @@ def _manage_events_submenu(user):
 
     ui_utils.clear_console()
 
-    print(f"O que deseja fazer com o evento '{selected_event[1]}'?")
+    ui_utils.pretty_message(f"O que deseja fazer com o evento '{selected_event[1]}'?")
 
     em_andamento: bool = selected_event[5]
     while True:
@@ -215,27 +215,10 @@ def _manage_events_submenu(user):
 
 
 def _create_event_submenu(user):
-    ui_utils.clear_console()
-    ui_utils.show_banner("CRIAR NOVO EVENTO")
+    ui_utils.pretty_message("CRIAR NOVO EVENTO")
+    ui_utils.pretty_message(f"Usuário logado: {user[1]}")
 
-    print(f"Usuário logado: {user['Nickname']}\n")
-
-    nome = input("Nome do Evento: ").strip()
-    data_evento = input("Data do Evento (YYYY-MM-DD): ").strip()
-    descricao = input("Descrição do Evento: ").strip()
-
-    # Validação simples
-    if not nome:
-        ui_utils.pretty_message("Erro: O nome do evento não pode ser vazio.")
-        return False
-
-    if not data_evento:
-        ui_utils.pretty_message("Erro: A data do evento não pode ser vazia.")
-        return False
-
-    if not descricao:
-        ui_utils.pretty_message("Erro: A descrição do evento não pode ser vazia.")
-        return False
+    eventos_service.create_event(user[0])
 
 
 def _remove_event_submenu(user):

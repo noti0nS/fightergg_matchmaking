@@ -1,5 +1,7 @@
-from data import eventos_data
+from data import eventos_data, games_data
 from utils import type_utils, ui_utils, events_utils
+
+import dateparser, datetime
 
 
 def select_event_from_user(usuario_id):
@@ -9,15 +11,17 @@ def select_event_from_user(usuario_id):
             print(
                 "Não foi possível encontrar nenhum evento ativo para o usuário logado."
             )
-            return None
+            return
 
         for usuario_evento in usuario_eventos:
             _display_event_card(usuario_evento)
 
         while True:
             event_id = type_utils.get_safe_int(
-                "Informe o ID do evento que você deseja gerenciar: "
+                "Informe o ID do evento que você deseja gerenciar (-1 para sair): "
             )
+            if event_id == -1:
+                return
             found_event = next(
                 (ue for ue in usuario_eventos if ue[0] == event_id), None
             )
@@ -32,23 +36,23 @@ def select_event_from_user(usuario_id):
 
 
 def _display_event_card(usuario_evento):
-    qtd_participantes = usuario_evento[8]
-    qtd_players = usuario_evento[7]
+    qtd_participantes = usuario_evento[7]
+    qtd_players = usuario_evento[6]
     print(
         f"""[{usuario_evento[0]}] · {usuario_evento[1]}
 {usuario_evento[2]}
 
-Inscrições: {usuario_evento[3]} até {usuario_evento[4]}
-Recompensa: {usuario_evento[6]} \t\t\t Participantes: {qtd_participantes}/{qtd_players} {'(FULL)' if qtd_players == qtd_participantes else ''}
-Game: {usuario_evento[9]}
-Em andamento: {'SIM' if usuario_evento[5] else 'NÃO'}
+Data do Evento: {usuario_evento[3]} até {usuario_evento[4]}
+Recompensa: {usuario_evento[5]} \t\t\t Participantes: {qtd_participantes}/{qtd_players} {'(FULL)' if qtd_players == qtd_participantes else ''}
+Game: {usuario_evento[8]}
+Em andamento: {'SIM' if usuario_evento[4] else 'NÃO'}
 --------------------------------------------------------------------------"""
     )
 
 
 def start_event(usuario_evento) -> bool:
-    qtd_players = usuario_evento[7]
-    qtd_participantes = usuario_evento[8]
+    qtd_players = usuario_evento[6]
+    qtd_participantes = usuario_evento[7]
 
     if qtd_players > qtd_participantes:
         acceptable_qtd_players = events_utils.get_next_acceptable_limit(
@@ -196,6 +200,73 @@ def _set_match_winner_submenu(match):
     return eventos_data.set_match_winner(match[0], winner_id)
 
 
+def create_event(user_id):
+    new_event = {}
+
+    new_event["owner_id"] = user_id
+
+    valid = False
+    while not valid:
+        titulo = input("Título do Evento: ").strip()
+        if len(titulo) == 0:
+            ui_utils.pretty_message("O título não pode ser vazio!")
+            continue
+        new_event["titulo"] = titulo
+        valid = True
+
+    valid = False
+    while not valid:
+        input_date = input("Data do Evento (YYYY-MM-DD): ").strip()
+        data_evento = dateparser.parse(input_date)
+        if not data_evento:
+            ui_utils.pretty_message(f"A data '{input_date}' não é válida!")
+            continue
+        today = datetime.date.today()
+        if data_evento.date() < today:
+            ui_utils.pretty_message(
+                f"Você precisa informar uma data igual ou posterior a data atual ({today})!"
+            )
+            continue
+        new_event["data_inscr"] = data_evento
+        valid = True
+
+    new_event["descricao"] = input("Descrição do Evento: ").strip()
+
+    games = games_data.get_all_games()
+    for game in games:
+        print(f"[{game[0]}] - {game[1]}\n{game[2]}\n")
+
+    valid = False
+    while not valid:
+        game_id = type_utils.get_safe_int(input("Digite o ID do game do evento: "))
+        if not any((g[0] == game_id for g in games)):
+            ui_utils.pretty_message(
+                f"O ID não existe '{game_id}' não existe na tabela de games."
+            )
+            continue
+        new_event["game_id"] = game_id
+        valid = True
+
+    print("↓ Quantida de jogadores suportada no sistema ↓")
+    for qtd_player_limit in events_utils.QTD_PLAYERS_LIMITS:
+        print(qtd_player_limit)
+
+    valid = False
+    while not valid:
+        qtd_players = type_utils.get_safe_int(
+            input("Digite a quantidade de jogadores para o seu evento: ")
+        )
+        if not qtd_players in events_utils.QTD_PLAYERS_LIMITS:
+            ui_utils.pretty_message(
+                "A quantidade de jogadores digitada não é suportada."
+            )
+            continue
+        new_event["qtd_players"] = qtd_players
+        valid = True
+
+    return eventos_data.create_event(new_event)
+
+
 def edit_event_info(selected_event) -> bool:
     id_evento = selected_event[0]
     titulo = selected_event[1]
@@ -219,7 +290,7 @@ def edit_event_info(selected_event) -> bool:
         "titulo": novo_titulo if novo_titulo else titulo,
         "descricao": nova_descricao if nova_descricao else selected_event[2],
         "valor_recompensa": (
-            float(novo_valor_recompensa) if novo_valor_recompensa else selected_event[6]
+            float(novo_valor_recompensa) if novo_valor_recompensa else selected_event[5]
         ),
     }
     # Chama a atualização no banco de dados

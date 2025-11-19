@@ -12,8 +12,7 @@ def fetch_active_events_by_user(usuario_id):
         id,
         titulo,
         descricao,
-        data_inscr_inicio,
-        data_inscr_fim,
+        data_inscr,
         em_andamento,
         valor_recompensa,
         qtd_players,
@@ -30,8 +29,7 @@ SELECT
 	E.ID,
 	E.TITULO,
 	E.DESCRICAO,
-	E.DATA_INSCR_INICIO,
-	E.DATA_INSCR_FIM,
+	E.DATA_INSCR,
 	E.EM_ANDAMENTO,
 	E.VALOR_RECOMPENSA,
 	E.QTD_PLAYERS,
@@ -54,6 +52,45 @@ ORDER BY ID
 """
         cursor.execute(sql, (usuario_id,))
         return cursor.fetchall()
+    finally:
+        db.close_connection(conn, cursor)
+
+
+def create_event(new_event) -> bool:
+    conn = None
+    cursor = None
+
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return False
+
+        cursor = conn.cursor()
+
+        query = """
+INSERT INTO EVENTOS(OWNER_ID, GAME_ID, TITULO, DESCRICAO, DATA_INSCR, QTD_PLAYERS, VALOR_RECOMPENSA)
+VALUES (%s, %s, %s, %s, %s, %s, %s)
+"""
+        cursor.execute(
+            query,
+            (
+                new_event["owner_id"],
+                new_event["game_id"],
+                new_event["titulo"],
+                new_event["descricao"],
+                new_event["data_inscr"],
+                new_event["qtd_players"],
+                new_event["valor_recompensa"],
+            ),
+        )
+
+        conn.commit()
+        return True
+
+    except Exception as e:
+        print(f"[create_event] Erro ao gravar evento: {e}")
+        return False
+
     finally:
         db.close_connection(conn, cursor)
 

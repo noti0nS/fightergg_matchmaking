@@ -1,3 +1,4 @@
+-- INSERT GAMES
 INSERT INTO GAMES (TITULO, DESCRICAO)
 VALUES (
     'Street Fighter V',
@@ -19,6 +20,7 @@ VALUES (
     'Dragon Ball FighterZ',
     'Um jogo de luta baseado na popular série Dragon Ball.'
   );
+-- INSERT USUARIOS
 -- O hash da senha abaixo corresponde a 'Type20!@#'
 INSERT INTO USUARIOS (NOME_COMPLETO, NICKNAME, EMAIL, SENHA, BALANCE)
 VALUES (
@@ -126,13 +128,14 @@ VALUES (
     '$2b$12$z0Bt1RxOl1jCGHkauMZn9Ow8o7j3NAVA0wjz7VDAJJ1B6Hy5f9z4C',
     0
   );
+-- INSERT EVENTOS
+-- Nota: A data usada aqui é a antiga DATA_FIM
 INSERT INTO EVENTOS (
     OWNER_ID,
     GAME_ID,
     TITULO,
     DESCRICAO,
-    DATA_INSCR_INICIO,
-    DATA_INSCR_FIM,
+    DATA_INSCR,
     QTD_PLAYERS,
     VALOR_RECOMPENSA
   )
@@ -141,7 +144,6 @@ VALUES (
     1,
     'Torneio Street Fighter V - Iniciante',
     'Torneio para jogadores iniciantes de Street Fighter V.',
-    '2025-08-01',
     '2025-08-07',
     8,
     100.00
@@ -152,8 +154,7 @@ INSERT INTO EVENTOS (
     WINNER_ID,
     TITULO,
     DESCRICAO,
-    DATA_INSCR_INICIO,
-    DATA_INSCR_FIM,
+    DATA_INSCR,
     QTD_PLAYERS,
     VALOR_RECOMPENSA
   )
@@ -163,7 +164,6 @@ VALUES (
     5,
     'Tekken 7 King of the Iron Fist - Edição Brasil',
     'Campeonato nacional de Tekken 7. Vagas limitadas.',
-    '2025-09-15',
     '2025-09-20',
     8,
     500.00
@@ -174,7 +174,6 @@ VALUES (
     1,
     'Mortal Kombat 11 - Duelo de Fim de Semana',
     'Torneio amistoso para testar suas habilidades.',
-    '2025-10-05',
     '2025-10-06',
     8,
     0.00
@@ -185,7 +184,6 @@ VALUES (
     11,
     'Copa DBFZ - Saga de Cell',
     'Torneio temático de Dragon Ball FighterZ.',
-    '2025-10-10',
     '2025-10-12',
     8,
     150.00
@@ -196,7 +194,6 @@ VALUES (
     8,
     'Super Smash Bros. Ultimate - Batalha de Equipes',
     'Evento 2v2 de Super Smash Bros. Ultimate.',
-    '2025-10-18',
     '2025-10-19',
     8,
     200.00
@@ -207,7 +204,6 @@ VALUES (
     7,
     'Street Fighter V - Retorno do Rei',
     'Torneio de alto nível para jogadores experientes.',
-    '2025-10-25',
     '2025-10-27',
     8,
     1000.00
@@ -218,7 +214,6 @@ VALUES (
     14,
     'Tekken 7 - Desafio dos Novatos',
     'Aberto apenas para jogadores com menos de 100h de jogo.',
-    '2025-11-01',
     '2025-11-02',
     8,
     50.00
@@ -229,7 +224,6 @@ VALUES (
     NULL,
     'Smash Ultimate - Batalha Semanal de Novembro',
     'Evento semanal, venha provar que é o melhor!',
-    '2025-11-08',
     '2025-11-15',
     8,
     150.00
@@ -240,7 +234,6 @@ VALUES (
     NULL,
     'Copa DBFZ - O Despertar do Poder',
     'Quem será o guerreiro Z mais forte? Inscrições abertas.',
-    '2025-12-01',
     '2025-12-05',
     8,
     200.00
@@ -251,7 +244,6 @@ VALUES (
     NULL,
     'Street Fighter V - Torneio de Fim de Ano',
     'Fechando o ano com chave de ouro. Só para os melhores.',
-    '2025-12-20',
     '2025-12-22',
     8,
     300.00
@@ -262,7 +254,6 @@ VALUES (
     NULL,
     'Mortal Kombat 11 - Kombat League (Dezembro)',
     'Temporada de dezembro da liga online.',
-    '2025-12-01',
     '2025-12-31',
     8,
     100.00
@@ -274,7 +265,6 @@ VALUES (
     'Tekken 7 - O Punho de Aço',
     'Torneio relâmpago de um dia.',
     '2025-11-30',
-    '2025-11-30',
     8,
     100.00
   ),
@@ -285,7 +275,6 @@ VALUES (
     'Smash Ultimate - Torneio Comunitário',
     'Evento gratuito para a comunidade.',
     '2025-12-07',
-    '2025-12-07',
     8,
     0.00
   ),
@@ -295,7 +284,6 @@ VALUES (
     NULL,
     'SFV - Desafio do Ryu',
     'Torneio focado apenas em personagens Shoto.',
-    '2025-12-10',
     '2025-12-11',
     8,
     50.00
@@ -306,7 +294,6 @@ VALUES (
     NULL,
     'DBFZ - Batalha 3v3',
     'Mostre a sinergia da sua equipe.',
-    '2026-01-05',
     '2026-01-07',
     8,
     250.00
@@ -317,7 +304,6 @@ VALUES (
     NULL,
     'MK11 - Guerra de Clãs',
     'Torneio focado em times e clãs.',
-    '2026-01-10',
     '2026-01-15',
     8,
     400.00
@@ -329,7 +315,6 @@ VALUES (
     'Smash Ultimate - Rei da Montanha',
     'Formato King of the Hill. O vencedor leva tudo.',
     '2026-01-12',
-    '2026-01-12',
     8,
     100.00
   ),
@@ -339,7 +324,6 @@ VALUES (
     NULL,
     'Tekken 7 - Elite Showdown',
     'Apenas para jogadores ranqueados.',
-    '2026-01-20',
     '2026-01-25',
     8,
     750.00
@@ -350,7 +334,6 @@ VALUES (
     NULL,
     'Street Fighter V - Pro Tour Online (América do Sul)',
     'Etapa classificatória do Pro Tour.',
-    '2026-02-01',
     '2026-02-05',
     8,
     1500.00
@@ -361,7 +344,6 @@ VALUES (
     NULL,
     'DBFZ - Torneio do Poder',
     'Grande evento anual de Dragon Ball FighterZ.',
-    '2026-02-10',
     '2026-02-15',
     8,
     2000.00
@@ -373,7 +355,6 @@ VALUES (
     'Mortal Kombat 11 - Amistoso da Comunidade',
     'Evento semanal sem prêmios, apenas pela glória.',
     '2025-11-20',
-    '2025-11-20',
     8,
     0.00
   ),
@@ -383,7 +364,6 @@ VALUES (
     NULL,
     'SFV - Batalha dos Veteranos',
     'Aberto apenas para contas criadas antes de 2023.',
-    '2025-11-25',
     '2025-11-26',
     8,
     100.00
@@ -395,7 +375,6 @@ VALUES (
     'Tekken 7 - Duelo de Rivais',
     'Traga seu rival e resolva no ringue.',
     '2025-12-15',
-    '2025-12-15',
     8,
     0.00
   ),
@@ -405,7 +384,6 @@ VALUES (
     NULL,
     'Super Smash Bros. - A Grande Batalha',
     'Evento principal de fim de ano.',
-    '2025-12-28',
     '2025-12-30',
     8,
     1200.00
@@ -416,11 +394,11 @@ VALUES (
     NULL,
     'DBFZ - Treinamento de Inverno',
     'Torneio para praticar novas equipes e estratégias.',
-    '2026-01-18',
     '2026-01-19',
     8,
     50.00
   );
+-- INSERT TICKETS
 INSERT INTO EVENTOS_TICKETS (EVENTO_ID, USUARIO_ID)
 VALUES -- Evento 1 (Owner 1)
   (1, 2),
