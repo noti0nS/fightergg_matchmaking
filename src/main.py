@@ -60,7 +60,9 @@ def main():
                 case 3:
                     _manage_events_submenu(user)
                 case 4:
-                    _create_event_submenu(user)
+                    if _create_event_submenu(user):
+                        print("Evento criado com sucesso!")
+                    ui_utils.divider()
                 case 5:
                     _remove_event_submenu(user)
                 case 6:
@@ -174,7 +176,7 @@ def _manage_events_submenu(user):
 
     ui_utils.pretty_message(f"O que deseja fazer com o evento '{selected_event[1]}'?")
 
-    em_andamento: bool = selected_event[5]
+    em_andamento: bool = selected_event[4]
     while True:
         if em_andamento:
             print("[1] - Gerenciar Partidas")
@@ -216,8 +218,6 @@ def _manage_events_submenu(user):
 
 def _create_event_submenu(user):
     ui_utils.pretty_message("CRIAR NOVO EVENTO")
-    ui_utils.pretty_message(f"Usuário logado: {user[1]}")
-
     eventos_service.create_event(user[0])
 
 

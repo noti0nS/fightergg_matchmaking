@@ -41,8 +41,7 @@ def _display_event_card(usuario_evento):
     print(
         f"""[{usuario_evento[0]}] · {usuario_evento[1]}
 {usuario_evento[2]}
-
-Data do Evento: {usuario_evento[3]} até {usuario_evento[4]}
+Data do Evento: {usuario_evento[3]}
 Recompensa: {usuario_evento[5]} \t\t\t Participantes: {qtd_participantes}/{qtd_players} {'(FULL)' if qtd_players == qtd_participantes else ''}
 Game: {usuario_evento[8]}
 Em andamento: {'SIM' if usuario_evento[4] else 'NÃO'}
@@ -205,17 +204,17 @@ def create_event(user_id):
 
     new_event["owner_id"] = user_id
 
-    valid = False
-    while not valid:
+    while True:
         titulo = input("Título do Evento: ").strip()
         if len(titulo) == 0:
             ui_utils.pretty_message("O título não pode ser vazio!")
             continue
         new_event["titulo"] = titulo
-        valid = True
+        break
 
-    valid = False
-    while not valid:
+    ui_utils.divider()
+
+    while True:
         input_date = input("Data do Evento (YYYY-MM-DD): ").strip()
         data_evento = dateparser.parse(input_date)
         if not data_evento:
@@ -228,33 +227,41 @@ def create_event(user_id):
             )
             continue
         new_event["data_inscr"] = data_evento
-        valid = True
+        break
+
+    ui_utils.divider()
 
     new_event["descricao"] = input("Descrição do Evento: ").strip()
+
+    ui_utils.divider()
+
+    print("↓ Jogos disponiveis no sistema ↓\n")
 
     games = games_data.get_all_games()
     for game in games:
         print(f"[{game[0]}] - {game[1]}\n{game[2]}\n")
 
-    valid = False
-    while not valid:
-        game_id = type_utils.get_safe_int(input("Digite o ID do game do evento: "))
+    while True:
+        game_id = type_utils.get_safe_int("Digite o ID do game do evento: ")
         if not any((g[0] == game_id for g in games)):
             ui_utils.pretty_message(
                 f"O ID não existe '{game_id}' não existe na tabela de games."
             )
             continue
         new_event["game_id"] = game_id
-        valid = True
+        break
 
-    print("↓ Quantida de jogadores suportada no sistema ↓")
+    ui_utils.divider()
+
+    print("↓ Quantida de jogadores suportada no sistema ↓\n")
     for qtd_player_limit in events_utils.QTD_PLAYERS_LIMITS:
         print(qtd_player_limit)
 
-    valid = False
-    while not valid:
+    print()
+
+    while True:
         qtd_players = type_utils.get_safe_int(
-            input("Digite a quantidade de jogadores para o seu evento: ")
+            "Digite a quantidade de jogadores para o seu evento: "
         )
         if not qtd_players in events_utils.QTD_PLAYERS_LIMITS:
             ui_utils.pretty_message(
@@ -262,7 +269,20 @@ def create_event(user_id):
             )
             continue
         new_event["qtd_players"] = qtd_players
-        valid = True
+        break
+
+    while True:
+        valor_recompensa = input(
+            "Digite o valor da recompensa (ENTER para R$ 0): "
+        ).strip()
+        if len(valor_recompensa) == 0:
+            valor_recompensa = 0.0
+        else:
+            valor_recompensa = type_utils.to_float(valor_recompensa)
+            if valor_recompensa == None:
+                continue
+        new_event["valor_recompensa"] = valor_recompensa
+        break
 
     return eventos_data.create_event(new_event)
 

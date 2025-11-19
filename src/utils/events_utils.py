@@ -1,6 +1,6 @@
 import math
 
-QTD_PLAYERS_LIMITS = [4, 8, 16, 32, 64]
+QTD_PLAYERS_LIMITS = [2, 4, 8, 16, 32, 64]
 
 
 def calculate_rounds_based_on_player_count(qtd_players):
