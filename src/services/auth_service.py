@@ -1,13 +1,13 @@
 from utils import validators_utils, password_utils
 from data import usuarios_data
 
-import getpass
+import pwinput
 
 
 def login() -> tuple | None:
     try:
         email = input("Digite o seu e-mail: ")
-        password = getpass.getpass("Digite a sua senha: ")
+        password = pwinput.pwinput("Digite a sua senha: ")
 
         if not validators_utils.is_email_valid(email):
             print(
@@ -39,7 +39,7 @@ def register() -> bool:
         nome_completo = input("Digite seu nome completo: ")
         nickname = input("Escolha um nickname: ")
         email = input("Digite seu e-mail: ")
-        password = getpass.getpass("Escolha uma senha: ")
+        password = input("Escolha uma senha: ")
 
         # Validar E-mail
         if not validators_utils.is_email_valid(email):
