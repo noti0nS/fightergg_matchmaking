@@ -76,6 +76,11 @@ def main():
     print("Até breve! :-)")
 
 
+def _join_event_submenu(user):
+    ui_utils.pretty_message("PARTICIPAR DE EVENTOS")
+    return eventos_service.create_event_ticket(user[0])
+
+
 def _show_events_joined_submenu(user):
     ui_utils.pretty_message("LISTA DE EVENTOS ATIVOS")
 
@@ -120,51 +125,6 @@ def _show_events_joined_submenu(user):
         print(f"Ocorreu um erro ao listar os eventos: {e}")
 
 
-def _join_event_submenu(user):
-    ui_utils.pretty_message("PARTICIPAR DE EVENTOS")
-
-    ui_utils.show_banner()
-    try:
-        usuario_id = user[0]  # Pega o ID do usuário
-        events_list = eventos_service.fetch_active_events_by_user(
-            usuario_id
-        )  # Buscar os eventos ativos do usuário
-
-        if not events_list:
-            print(f"\n{len(events_list)} evento(s) ativo(s) encontrado(s):\n")
-
-            for event in events_list:
-                for evento in events_list:
-                    (
-                        id,
-                        titulo,
-                        descricao,
-                        data_inicio,
-                        data_fim,
-                        em_andamento,
-                        valor_recompensa,
-                        qtd_players,
-                        qtd_subscribed_players,
-                    ) = evento
-
-                    status = "Em Andamento" if em_andamento else "Não Iniciado"
-                    print(f"ID: {id}")
-                    print(f"Título: {titulo}")
-                    print(f"Descrição: {descricao}")
-                    print(f"Data de Início das Inscrições: {data_inicio}")
-                    print(f"Data de Fim das Inscrições: {data_fim}")
-                    print(f"Status: {status}")
-                    print(f"Valor da Recompensa: {valor_recompensa}")
-                    print(f"Quantidade de Jogadores: {qtd_players}")
-                    print(
-                        f"Quantidade de Jogadores Inscritos: {qtd_subscribed_players}"
-                    )
-                    print("--" * 30)
-
-    except Exception as e:
-        print(f"Ocorreu um erro ao listar os eventos: {e}")
-
-
 def _manage_events_submenu(user):
     ui_utils.pretty_message("GERENCIAMENTO DE EVENTOS")
 
@@ -196,6 +156,7 @@ def _manage_events_submenu(user):
             match option:
                 case 1:
                     eventos_service.manage_event_matches(selected_event[0])
+                    ui_utils.divider()
                 case 2:
                     ui_utils.show_banner()
                     break
@@ -207,10 +168,14 @@ def _manage_events_submenu(user):
                         ui_utils.clear_console()
                         msg = f"O EVENTO '{selected_event[1]}' COMEÇOU!"
                         ui_utils.pretty_message(msg)
+                    else:
+                        ui_utils.divider()
                 case 2:
                     ui_utils.clear_console()
                     if eventos_service.edit_event_info(selected_event):
                         ui_utils.clear_console()
+                    else:
+                        ui_utils.divider()
                 case 3:
                     ui_utils.show_banner()
                     break
@@ -218,7 +183,7 @@ def _manage_events_submenu(user):
 
 def _create_event_submenu(user):
     ui_utils.pretty_message("CRIAR NOVO EVENTO")
-    eventos_service.create_event(user[0])
+    return eventos_service.create_event(user[0])
 
 
 def _remove_event_submenu(user):

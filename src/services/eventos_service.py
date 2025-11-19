@@ -1,5 +1,5 @@
-from data import eventos_data, games_data
-from utils import type_utils, ui_utils, events_utils
+from data import eventos_data, eventos_partidas_data, games_data
+from utils import eventos_utils, type_utils, ui_utils
 
 import dateparser, datetime
 
@@ -54,7 +54,7 @@ def start_event(usuario_evento) -> bool:
     qtd_participantes = usuario_evento[7]
 
     if qtd_players > qtd_participantes:
-        acceptable_qtd_players = events_utils.get_next_acceptable_limit(
+        acceptable_qtd_players = eventos_utils.get_next_acceptable_limit(
             qtd_participantes
         )
         if qtd_participantes == acceptable_qtd_players:
@@ -88,7 +88,7 @@ def manage_event_matches(evento_id):
             _display_event_headline(evento_data)
             break
 
-        matches_data = eventos_data.fetch_event_matches(evento_id)
+        matches_data = eventos_partidas_data.fetch_event_matches(evento_id)
         current_round = _get_current_round(matches_data)
 
         _display_event_headline(evento_data, current_round)
@@ -129,7 +129,7 @@ def manage_event_matches(evento_id):
                     if _set_match_winner_submenu(match):
                         break
                 case 2:
-                    if eventos_data.increment_match_round(match_id):
+                    if eventos_partidas_data.increment_match_round(match_id):
                         break
             print()
 
@@ -196,7 +196,7 @@ def _set_match_winner_submenu(match):
             return False
         winner_id = match[option]
 
-    return eventos_data.set_match_winner(match[0], winner_id)
+    return eventos_partidas_data.set_match_winner(match[0], winner_id)
 
 
 def create_event(user_id):
@@ -254,7 +254,7 @@ def create_event(user_id):
     ui_utils.divider()
 
     print("↓ Quantida de jogadores suportada no sistema ↓\n")
-    for qtd_player_limit in events_utils.QTD_PLAYERS_LIMITS:
+    for qtd_player_limit in eventos_utils.QTD_PLAYERS_LIMITS:
         print(qtd_player_limit)
 
     print()
@@ -263,7 +263,7 @@ def create_event(user_id):
         qtd_players = type_utils.get_safe_int(
             "Digite a quantidade de jogadores para o seu evento: "
         )
-        if not qtd_players in events_utils.QTD_PLAYERS_LIMITS:
+        if not qtd_players in eventos_utils.QTD_PLAYERS_LIMITS:
             ui_utils.pretty_message(
                 "A quantidade de jogadores digitada não é suportada."
             )
@@ -285,6 +285,10 @@ def create_event(user_id):
         break
 
     return eventos_data.create_event(new_event)
+
+
+def create_event_ticket(user_id):
+    return True
 
 
 def edit_event_info(selected_event) -> bool:
