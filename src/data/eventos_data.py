@@ -263,7 +263,7 @@ WHERE
         db.close_connection(conn, cursor)
 
 
-def finish_game(winner_id, evento_id, cursor: psycopg2.extensions.cursor):
+def finish_event(winner_id, evento_id, cursor: psycopg2.extensions.cursor):
     sql = """
 UPDATE EVENTOS
 SET

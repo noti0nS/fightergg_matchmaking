@@ -103,8 +103,7 @@ RETURNING EVENTO_ID, NEXT_MATCH_ID;
         if next_match_id:
             _set_player_next_match(winner_id, next_match_id, cursor)
         else:
-            eventos_data.finish_game(winner_id, evento_id, cursor)
-
+            eventos_data.finish_event(winner_id, evento_id, cursor)
         conn.commit()
         return True
     except Exception as e:
