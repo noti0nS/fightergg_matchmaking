@@ -8,7 +8,7 @@ def select_event_from_user(usuario_id):
     try:
         usuario_eventos = eventos_data.fetch_active_events_by_user(usuario_id)
         if len(usuario_eventos) == 0:
-            print(
+            ui_utils.pretty_message(
                 "Não foi possível encontrar nenhum evento ativo para o usuário logado."
             )
             return
@@ -27,7 +27,7 @@ def select_event_from_user(usuario_id):
             )
             if found_event:
                 return found_event
-            print(
+            ui_utils.pretty_message(
                 f"Não foi possível encontrar o evento com ID {event_id}. Tente novamente."
             )
 
@@ -71,7 +71,7 @@ def start_event(usuario_evento) -> bool:
                     return False
 
         else:
-            print(
+            ui_utils.pretty_message(
                 f"O evento possui {qtd_participantes} jogadores inscritos, o que impossibilita o duelo entre todos. Você precisa ter ao menos {acceptable_qtd_players} jogadores registrados para prosseguir."
             )
             return False
@@ -119,7 +119,9 @@ def manage_event_matches(evento_id):
                 None,
             )
             if not match:
-                print(f"A partida '{match_id}' não está disponível para seleção.")
+                ui_utils.pretty_message(
+                    f"A partida '{match_id}' não está disponível para seleção."
+                )
                 ui_utils.divider()
                 continue
 
@@ -312,7 +314,7 @@ def create_event_ticket(user_id):
 
         return eventos_data.create_event_ticket(event_id, user_id)
     except Exception as e:
-        print(f"Falha criação do ticket: {e}")
+        ui_utils.pretty_message(f"Falha criação do ticket: {e}")
         return False
 
 
@@ -388,7 +390,7 @@ def edit_event_info(selected_event) -> bool:
     ui_utils.clear_console()
 
     # Lista/tupla
-    print(f"Editando o evento: {titulo} (ID: {id_evento})")
+    ui_utils.pretty_message(f"Editando o evento: {titulo} (ID: {id_evento})")
 
     # Pede novos dados ao usuário
     novo_titulo = input("Novo nome (ENTER para manter): ").strip()
@@ -410,8 +412,45 @@ def edit_event_info(selected_event) -> bool:
     sucesso = eventos_data.update_event(updated_event)
 
     if sucesso:
-        print("Evento atualizado com sucesso!")
+        ui_utils.pretty_message("Evento atualizado com sucesso!")
     else:
-        print("Erro ao atualizar o evento.")
+        ui_utils.pretty_message("Erro ao atualizar o evento.")
 
     return sucesso
+
+
+def delete_event(user_id):
+    usuario_eventos = eventos_data.fetch_deletable_events_by_user(user_id)
+    if len(usuario_eventos) == 0:
+        ui_utils.pretty_message("O usuário não possui eventos que podem ser removidos.")
+        return False
+
+    for usuario_evento in usuario_eventos:
+        _display_deletable_event_card(usuario_evento)
+
+    event_id = None
+    while True:
+        event_id = type_utils.get_safe_int(
+            "Informe o ID do evento que você deseja excluir (-1 para sair): "
+        )
+        if event_id == -1:
+            return False
+        if any((ue[0] == event_id for ue in usuario_eventos)):
+            break
+        ui_utils.pretty_message(
+            f"Não foi possível encontrar o evento com ID {event_id}. Tente novamente."
+        )
+
+    return eventos_data.delete_event(event_id)
+
+
+def _display_deletable_event_card(usuario_evento):
+    qtd_participantes = usuario_evento[5]
+    qtd_players = usuario_evento[4]
+    print(
+        f"""[{usuario_evento[0]}] · {usuario_evento[1]}
+Data do Evento: {usuario_evento[2]}
+Recompensa: {usuario_evento[3]} \t\t\t Participantes: {qtd_participantes}/{qtd_players} {'(FULL)' if qtd_players == qtd_participantes else ''}
+Game: {usuario_evento[6]}
+--------------------------------------------------------------------------"""
+    )

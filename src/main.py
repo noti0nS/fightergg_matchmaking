@@ -68,7 +68,9 @@ def main():
                         ui_utils.clear_console()
                         ui_utils.pretty_message("Evento criado com sucesso!")
                 case 5:
-                    _remove_event_submenu(user)
+                    if _remove_event_submenu(user):
+                        ui_utils.clear_console()
+                        ui_utils.pretty_message("Evento removido com sucesso!")
                 case 6:
                     auth_service.show_personal_info(user[0])
                 case 7:
@@ -150,10 +152,8 @@ def _create_event_submenu(user):
 
 
 def _remove_event_submenu(user):
-    """
-    TODO Gabriel: Implementar remoção de evento
-    P.S: Só é possível remover eventos que ainda não foram iniciados
-    """
+    ui_utils.pretty_message("EXCLUIR EVENTO")
+    return eventos_service.delete_event(user[0])
 
 
 if __name__ == "__main__":

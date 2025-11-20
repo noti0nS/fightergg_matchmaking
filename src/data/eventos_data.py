@@ -55,6 +55,52 @@ ORDER BY ID
         db.close_connection(conn, cursor)
 
 
+def fetch_deletable_events_by_user(usuario_id):
+    """
+    Returns a list of (
+        id,
+        titulo,
+        data_inscr,
+        valor_recompensa,
+        qtd_players,
+        qtd_subscribed_players,
+        game_titulo)
+    """
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return None
+        cursor = conn.cursor()
+        sql = """
+SELECT
+	E.ID,
+	E.TITULO,
+	E.DATA_INSCR,
+	E.VALOR_RECOMPENSA,
+	E.QTD_PLAYERS,
+	(
+		SELECT
+			COUNT(*)
+		FROM
+			EVENTOS_TICKETS ET
+		WHERE
+			ET.EVENTO_ID = E.ID
+	) AS QTD_SUBSCRIBED_PLAYERS,
+	G.TITULO
+FROM
+	EVENTOS E
+	INNER JOIN GAMES G ON E.GAME_ID = G.ID
+WHERE
+	OWNER_ID = %s
+    AND NOT EM_ANDAMENTO
+ORDER BY ID
+"""
+        cursor.execute(sql, (usuario_id,))
+        return cursor.fetchall()
+    finally:
+        db.close_connection(conn, cursor)
+
+
 def fetch_available_events(logged_user_id):
     """
     Returns a list of (
@@ -339,3 +385,20 @@ RETURNING VALOR_RECOMPENSA;
     if valor_recompensa:
         sql = "UPDATE USUARIOS SET BALANCE = BALANCE + %s WHERE ID = %s"
         cursor.execute(sql, (valor_recompensa, winner_id))
+
+
+def delete_event(event_id):
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return False
+        cursor = conn.cursor()
+        sql = "DELETE FROM EVENTOS WHERE ID = %s;"
+        cursor.execute(sql, (event_id,))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"[delete_event] Erro ao remover evento: {e}")
+        return False
+    finally:
+        db.close_connection(conn, cursor)
