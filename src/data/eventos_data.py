@@ -101,13 +101,59 @@ FROM
 	INNER JOIN GAMES G ON E.GAME_ID = G.ID
     LEFT JOIN USUARIOS U ON E.OWNER_ID = U.ID
 WHERE
-	OWNER_ID != %s
-    AND NOT EM_ANDAMENTO
+	NOT EM_ANDAMENTO
     AND QTD_SUBSCRIBED_PLAYERS < QTD_PLAYERS
-    AND E.ID NOT IN (SELECT ET.EVENTO_ID FROM EVENTOS_TICKETS ET WHERE ET.USUARIO_ID = %s AND ET.EVENTO_ID = E.ID) 
+    AND E.ID NOT IN (SELECT ET.EVENTO_ID FROM EVENTOS_TICKETS ET WHERE ET.USUARIO_ID = %s AND ET.EVENTO_ID = E.ID) -- Não incluir eventos que o usuário logado já está cadastrado
 ORDER BY ID
 """
         cursor.execute(sql, (logged_user_id, logged_user_id))
+        return cursor.fetchall()
+    finally:
+        db.close_connection(conn, cursor)
+
+
+def fetch_joined_events_by_user(user_id):
+    """
+    Returns a list of (
+        id,
+        titulo,
+        data_inscr,
+        em_andamento,
+        valor_recompensa,
+        qtd_players,
+        qtd_subscribed_players,
+        game_titulo)
+    """
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return None
+        cursor = conn.cursor()
+        sql = """
+SELECT
+	E.ID,
+	E.TITULO,
+    E.DATA_INSCR,
+	E.EM_ANDAMENTO,
+	E.VALOR_RECOMPENSA,
+	E.QTD_PLAYERS,
+	(
+		SELECT
+			COUNT(*)
+		FROM
+			EVENTOS_TICKETS ET
+		WHERE
+			ET.EVENTO_ID = E.ID
+	) AS QTD_SUBSCRIBED_PLAYERS,
+	G.TITULO
+FROM
+	EVENTOS E
+	INNER JOIN GAMES G ON E.GAME_ID = G.ID
+WHERE
+    E.ID IN (SELECT ET.EVENTO_ID FROM EVENTOS_TICKETS ET WHERE ET.USUARIO_ID = %s AND ET.EVENTO_ID = E.ID) -- Incluir apenas os eventos que o usuário logado está cadastrado
+ORDER BY ID
+"""
+        cursor.execute(sql, (user_id,))
         return cursor.fetchall()
     finally:
         db.close_connection(conn, cursor)

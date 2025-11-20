@@ -330,6 +330,56 @@ Game: {event[7]}
     )
 
 
+def show_event_progress(user_id):
+    try:
+        events = eventos_data.fetch_joined_events_by_user(user_id)
+        if len(events) == 0:
+            return
+
+        for event in events:
+            _display_joined_event_card(event)
+
+        selected_event = None
+        while True:
+            event_id = type_utils.get_safe_int(
+                "Informe o ID do evento que você deseja visualizar o progresso (-1 para sair): "
+            )
+            if event_id == -1:
+                return
+            selected_event = next((e for e in events if e[0] == event_id), None)
+            if selected_event:
+                break
+            ui_utils.pretty_message(
+                f"Não foi possível encontrar o evento com ID {event_id}. Tente novamente."
+            )
+
+        ui_utils.clear_console()
+
+        if not selected_event[3]:
+            ui_utils.pretty_message(
+                f"O evento '{selected_event[1]}' ainda não começou!"
+            )
+            return
+
+        matches_data = eventos_partidas_data.fetch_event_matches(selected_event[0])
+        _display_event_matches(matches_data, _get_current_round(matches_data))
+
+    except Exception as e:
+        ui_utils.pretty_message(f"Erro ao recuperar evento: {e}")
+
+
+def _display_joined_event_card(event):
+    qtd_players = event[5]
+    qtd_participantes = event[6]
+    print(
+        f"""[{event[0]}] · {event[1]}
+Data do Evento: {event[2]}
+Recompensa: {event[4]} \t\t\t Participantes: {qtd_participantes}/{qtd_players}
+Game: {event[7]}
+--------------------------------------------------------------------------"""
+    )
+
+
 def edit_event_info(selected_event) -> bool:
     id_evento = selected_event[0]
     titulo = selected_event[1]
