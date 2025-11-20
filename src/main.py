@@ -54,7 +54,8 @@ def main():
 
             match option:
                 case 1:
-                    _join_event_submenu(user)
+                    if _join_event_submenu(user):
+                        print("Você está participando do evento selecionado!")
                 case 2:
                     _show_events_joined_submenu(user)
                 case 3:
@@ -62,14 +63,14 @@ def main():
                 case 4:
                     if _create_event_submenu(user):
                         print("Evento criado com sucesso!")
-                    ui_utils.divider()
                 case 5:
                     _remove_event_submenu(user)
                 case 6:
                     auth_service.show_personal_info(user[0])
-                    ui_utils.divider()
                 case 7:
                     user = None
+
+            ui_utils.divider()
 
         ui_utils.show_banner()
 

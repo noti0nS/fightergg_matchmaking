@@ -21,7 +21,7 @@ def show_banner():
 
 def pretty_message(message: str):
     msg_size = len(message)
-    print("\n" + "=" * msg_size)
+    print("=" * msg_size)
     print(message)
     print("=" * msg_size + "\n")
 

@@ -62,7 +62,6 @@ def fetch_available_events(logged_user_id):
         titulo,
         descricao,
         data_inscr,
-        em_andamento,
         valor_recompensa,
         qtd_players,
         qtd_subscribed_players,
@@ -92,7 +91,6 @@ SELECT
 	E.TITULO,
 	E.DESCRICAO,
 	E.DATA_INSCR,
-	E.EM_ANDAMENTO,
 	E.VALOR_RECOMPENSA,
 	E.QTD_PLAYERS,
 	E.QTD_SUBSCRIBED_PLAYERS,
@@ -106,10 +104,28 @@ WHERE
 	OWNER_ID != %s
     AND NOT EM_ANDAMENTO
     AND QTD_SUBSCRIBED_PLAYERS < QTD_PLAYERS
+    AND E.ID NOT IN (SELECT ET.EVENTO_ID FROM EVENTOS_TICKETS ET WHERE ET.USUARIO_ID = %s AND ET.EVENTO_ID = E.ID) 
 ORDER BY ID
 """
-        cursor.execute(sql, (logged_user_id,))
+        cursor.execute(sql, (logged_user_id, logged_user_id))
         return cursor.fetchall()
+    finally:
+        db.close_connection(conn, cursor)
+
+
+def create_event_ticket(event_id, user_id) -> bool:
+    try:
+        conn = db.create_connection()
+        if not conn:
+            return False
+        cursor = conn.cursor()
+        sql = "INSERT INTO EVENTOS_TICKETS(EVENTO_ID, USUARIO_ID) VALUES (%s, %s)"
+        cursor.execute(sql, (event_id, user_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"[create_event] Erro ao gravar evento: {e}")
+        return False
     finally:
         db.close_connection(conn, cursor)
 

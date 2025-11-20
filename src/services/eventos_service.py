@@ -288,7 +288,46 @@ def create_event(user_id):
 
 
 def create_event_ticket(user_id):
-    return True
+    try:
+        available_events = eventos_data.fetch_available_events(user_id)
+        if len(available_events) == 0:
+            ui_utils.pretty_message("Não há eventos disponíveis no momento.")
+            return
+
+        for event in available_events:
+            _display_event_card_ticket(event)
+
+        event_id = None
+        while True:
+            event_id = type_utils.get_safe_int(
+                "Informe o ID do evento que você deseja participar (-1 para sair): "
+            )
+            if event_id == -1:
+                return False
+            if any((ae for ae in available_events if ae[0] == event_id)):
+                break
+            ui_utils.pretty_message(
+                f"Não foi possível encontrar o evento com ID {event_id}. Tente novamente."
+            )
+
+        return eventos_data.create_event_ticket(event_id, user_id)
+    except Exception as e:
+        print(f"Falha criação do ticket: {e}")
+        return False
+
+
+def _display_event_card_ticket(event):
+    qtd_participantes = event[6]
+    qtd_players = event[5]
+    print(
+        f"""[{event[0]}] · {event[1]}
+{event[2]}
+Data do Evento: {event[3]}
+Realizado por: {event[8]}
+Recompensa: {event[4]} \t\t\t Participantes: {qtd_participantes}/{qtd_players}
+Game: {event[7]}
+--------------------------------------------------------------------------"""
+    )
 
 
 def edit_event_info(selected_event) -> bool:
