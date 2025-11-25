@@ -54,16 +54,16 @@ def register() -> bool:
         # Validar Formato da Senha
         password_status = validators_utils.validate_password_strength(password)
         if password_status:
-            print(password_status)
+            ui_utils.pretty_message(password_status)
             return False
 
         # Validação de erros de email e nick
         if usuarios_data.check_email_exists(email):
-            print("Erro: Este e-mail já está cadastrado")
+            ui_utils.pretty_message("Erro: Este e-mail já está cadastrado")
             return False
 
         if usuarios_data.check_nickname_exists(nickname):
-            print("Erro: Nickname já está em uso")
+            ui_utils.pretty_message("Erro: Nickname já está em uso")
             return False
 
         # Criptografia de senha, em hash
@@ -73,14 +73,14 @@ def register() -> bool:
         )
 
     except Exception as e:
-        print(f"Um erro inesperado ocorreu durante o registro: {e}")
+        ui_utils.pretty_message(f"Um erro inesperado ocorreu durante o registro: {e}")
         return False
 
 
 def show_personal_info(usuario_id):
     user_info = usuarios_data.get_user_info(usuario_id)
     if not user_info:
-        print("Não foi possível encontrar informações para o Usuário logado.")
+        ui_utils.pretty_message("Não foi possível encontrar informações para o Usuário logado.")
         return
     print(
         f"""
