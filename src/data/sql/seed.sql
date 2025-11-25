@@ -397,6 +397,16 @@ VALUES (
     '2026-01-19',
     8,
     50.00
+  ),
+  (
+    1,
+    1,
+    NULL,
+    'Street Fighter V - Desafio Relâmpago',
+    'Torneio rápido com apenas 4 vagas. Primeiro a chegar, primeiro a jogar!',
+    '2025-11-28',
+    4,
+    75.00
   );
 -- INSERT TICKETS
 INSERT INTO EVENTOS_TICKETS (EVENTO_ID, USUARIO_ID)
@@ -624,4 +634,8 @@ VALUES -- Evento 1 (Owner 1)
   (25, 9),
   (25, 11),
   (25, 13),
-  (25, 15);
+  (25, 15),
+  -- Evento 26 (Owner 1)
+  (26, 2),
+  (26, 3),
+  (26, 4);

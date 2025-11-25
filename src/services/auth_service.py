@@ -21,6 +21,11 @@ def login() -> tuple | None:
             return None
 
         user = usuarios_data.get_user_by_email(email)
+        if not user:
+            print(
+                "As credencias estão inválidas! Verifique se o e-mail e a senha foram digitados corretamente."
+            )
+            return None
         if not password_utils.verify_password(password, user[2]):
             print(
                 "As credencias estão inválidas! Verifique se o e-mail e a senha foram digitados corretamente."
@@ -63,7 +68,9 @@ def register() -> bool:
 
         # Criptografia de senha, em hash
         hashed_password = password_utils.generate_hashed_password(password)
-        return usuarios_data.create_user(nome_completo, nickname, email, hashed_password)
+        return usuarios_data.create_user(
+            nome_completo, nickname, email, hashed_password
+        )
 
     except Exception as e:
         print(f"Um erro inesperado ocorreu durante o registro: {e}")
@@ -75,8 +82,10 @@ def show_personal_info(usuario_id):
     if not user_info:
         print("Não foi possível encontrar informações para o Usuário logado.")
         return
-    print(f"""
+    print(
+        f"""
 Nome Completo: {user_info[0]}
 Email: {user_info[1]}
 Nickname: {user_info[2]}
-Saldo: R$ {user_info[3]}""")
+Saldo: R$ {user_info[3]}"""
+    )
