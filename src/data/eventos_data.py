@@ -152,7 +152,7 @@ WHERE
     AND E.ID NOT IN (SELECT ET.EVENTO_ID FROM EVENTOS_TICKETS ET WHERE ET.USUARIO_ID = %s AND ET.EVENTO_ID = E.ID) -- Não incluir eventos que o usuário logado já está cadastrado
 ORDER BY ID
 """
-        cursor.execute(sql, (logged_user_id, logged_user_id))
+        cursor.execute(sql, (logged_user_id,))
         return cursor.fetchall()
     finally:
         db.close_connection(conn, cursor)

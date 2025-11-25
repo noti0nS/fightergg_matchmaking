@@ -1,5 +1,4 @@
-import os
-
+import os, shutil
 
 def clear_console():
     os.system("cls" if os.name == "nt" else "clear")
@@ -20,10 +19,10 @@ def show_banner():
 
 
 def pretty_message(message: str):
-    msg_size = len(message)
-    print("=" * msg_size)
+    terminal_width = shutil.get_terminal_size().columns
+    print("=" * terminal_width)
     print(message)
-    print("=" * msg_size + "\n")
+    print("=" * terminal_width + "\n")
 
 
 def divider(length=30):
