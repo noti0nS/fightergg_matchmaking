@@ -1,4 +1,4 @@
-from utils import validators_utils, password_utils
+from utils import validators_utils, password_utils, ui_utils
 from data import usuarios_data
 
 import pwinput
@@ -10,31 +10,31 @@ def login() -> tuple | None:
         password = pwinput.pwinput("Digite a sua senha: ")
 
         if not validators_utils.is_email_valid(email):
-            print(
+            ui_utils.pretty_message(
                 "As credencias estão inválidas! Verifique se o e-mail e a senha foram digitados corretamente."
             )
             return None
 
         password_strength_result = validators_utils.validate_password_strength(password)
         if password_strength_result:
-            print(password_strength_result)
+            ui_utils.pretty_message(password_strength_result)
             return None
 
         user = usuarios_data.get_user_by_email(email)
         if not user:
-            print(
+            ui_utils.pretty_message(
                 "As credencias estão inválidas! Verifique se o e-mail e a senha foram digitados corretamente."
             )
             return None
         if not password_utils.verify_password(password, user[2]):
-            print(
+            ui_utils.pretty_message(
                 "As credencias estão inválidas! Verifique se o e-mail e a senha foram digitados corretamente."
             )
             return None
 
         return (user[0], user[1])  # Retorna apenas o id e nickname.
     except Exception as e:
-        print(e)
+        ui_utils.pretty_message(e)
 
 
 def register() -> bool:
